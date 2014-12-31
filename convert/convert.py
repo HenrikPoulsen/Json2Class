@@ -2,6 +2,7 @@ import os,sys,imp
 import glob
 import json
 import importlib
+from collections import OrderedDict
 
 
 def run(namespace, targets, json_path):
@@ -54,8 +55,16 @@ def generate(namespace, languages, json_object):
 
 def _parse_dict(obj, output, name=None):
     #print "public class " + str(name) + "{"
+    if(name is not None):
+        for f in output.keys():
+            output[f]["mod"].begin_class(name, output[f]["generated"])
     for key in obj.keys():
         _parse_type(obj[key], output, key)
+
+    if(name is not None):
+        for f in output.keys():
+            output[f]["mod"].end_class(name, output[f]["generated"])
+
     #print "}"
 
 
@@ -89,7 +98,7 @@ def _parse_string(obj, output, name=None):
 def _parse_type(obj, output, name=None):
     obj_type = type(obj)
 
-    if obj_type is dict:
+    if obj_type is dict or obj_type is OrderedDict:
         _parse_dict(obj, output, name)
     elif obj_type is list:
         _parse_list(obj, output, name)
@@ -115,7 +124,7 @@ def _load_json_files(json_path):
             json_objects.extend(_load_json_files(f))
     else:
         f = open(json_path, mode='r')
-        file_content = {"name": json_path, "content": json.load(f)}
+        file_content = {"name": json_path, "content": json.loads(f.read(), object_pairs_hook=OrderedDict)}
         json_objects.append(file_content)
     return json_objects
 
