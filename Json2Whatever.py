@@ -26,16 +26,6 @@ def main():
 
     convert.run(args.namespace, targets, args.source)
 
-    for lang in targets.keys():
-        #if targets[lang].startsWith("http://") or targets[lang].startsWith("https://"):
-        #if not os.path.isdir(targets[lang]):
-        #    print targets[lang] + " is an invalid directory. Skipping " + lang + " generation."
-        #    continue
-
-        module = __import__(lang+".generate")
-        module.generate.headers()
-        print targets[lang]
-
 
 
 if __name__ == "__main__":

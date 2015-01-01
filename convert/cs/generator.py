@@ -8,6 +8,9 @@ class Generator(BaseGenerator):
         self.data = None
         self.namespace = ""
 
+    def file_name(self, name):
+        return name[0].upper() + name[1:] + ".cs"
+
     def generateCode(self, namespace, data):
         """
 

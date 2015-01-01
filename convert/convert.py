@@ -21,8 +21,9 @@ def run(namespace, targets, json_path):
     try:
         json_objects = _load_json_files(json_path)
         for j in json_objects:
-            parse(namespace, languages, j)
-            generate(namespace, languages, j)
+            parsed = parse(j)
+            result = generate(namespace, languages, parsed)
+            _save_to_disk(result, targets)
     finally:
         print "Done"
 
@@ -74,6 +75,15 @@ def parse(json_object):
     _parse_type(json_object["content"], output)"""
 
     return parsed_data
+
+def _save_to_disk(result, targets):
+    for lang in targets.keys():
+        generator = importlib.import_module("convert."+lang+".generator").Generator()
+        for f in result:
+            out = open(targets[lang] + "/" + generator.file_name(f["name"]), "w+")
+            out.write(f["content"])
+            out.close()
+
 
 def _parse_dict(obj, output, name=None):
     #print "public class " + str(name) + "{"
