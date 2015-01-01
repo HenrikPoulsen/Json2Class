@@ -3,6 +3,7 @@ import glob
 import json
 import importlib
 from collections import OrderedDict
+from base.parsedclass import ParsedClass
 
 
 def run(namespace, targets, json_path):
@@ -20,6 +21,7 @@ def run(namespace, targets, json_path):
     try:
         json_objects = _load_json_files(json_path)
         for j in json_objects:
+            parse(namespace, languages, j)
             generate(namespace, languages, j)
     finally:
         print "Done"
@@ -27,7 +29,24 @@ def run(namespace, targets, json_path):
     #for lang in targets.keys():
     #    files = load_files(targets[lang])
 
-def generate(namespace, languages, json_object):
+
+def generate(namespace, languages, parsed_class_list):
+    """
+    Generates a list of content which should be saved to disk
+    :param namespace:
+    :param languages:
+    :param parsed_class_list:
+    :return:
+    """
+    content = []
+    for lang in languages:
+        generator = importlib.import_module("convert."+lang+".generator").Generator()
+        for parsed_class in parsed_class_list:
+            content.append({"name": parsed_class.name, "content": generator.generateCode(namespace, parsed_class)})
+
+    return content
+
+def parse(json_object):
     """
     Returns a list representing the generated content for the file which is to be saved to disk.
     :param namespace:
@@ -36,10 +55,14 @@ def generate(namespace, languages, json_object):
     :rtype: list
     :return:
     """
-    output = {}
+
+    parsed_data = []
+    stripped_filename = os.path.splitext(os.path.basename(json_object["name"]))[0]
+    ParsedClass.parse(stripped_filename, json_object["content"], parsed_data)
+
     # First we get the proper filename for the class and generate the header and footer of the class
-    for lang in languages:
-        mod = importlib.import_module("convert."+lang+".generate")
+    """for lang in languages:
+        mod = importlib.import_module("convert."+lang+".generator").Generator()
         stripped_filename = os.path.splitext(os.path.basename(json_object["name"]))[0]
         file_name = mod.file_name(stripped_filename)
         output[file_name] = {"mod": mod}
@@ -48,10 +71,9 @@ def generate(namespace, languages, json_object):
         output[file_name]["generated"].append(mod.footer())
 
     # Now we start iterating the json object to generate our class content
-    _parse_type(json_object["content"], output)
+    _parse_type(json_object["content"], output)"""
 
-    return output
-
+    return parsed_data
 
 def _parse_dict(obj, output, name=None):
     #print "public class " + str(name) + "{"

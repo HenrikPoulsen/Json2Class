@@ -4,7 +4,8 @@
 		"title": "S",
 		"glossList": {
 			"glossEntry": {
-				"id": "1",
+				"id": 1,
+				"testFloat": 0.99,
 				"sortAs": "SGML",
 				"glossTerm": "Standard Generalized Markup Language",
 				"acronym": "SGML",
