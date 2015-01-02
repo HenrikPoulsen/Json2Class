@@ -22,6 +22,11 @@ class ParsedClass():
                 parsed_classes.append(new_class)
                 new_class.load(json_object[member_name], parsed_classes)
 
+            elif member_type is list and json_object[member_name].__len__() > 0 and type(json_object[member_name][0]) is OrderedDict:
+                new_class = ParsedClass(member_name)
+                parsed_classes.append(new_class)
+                new_class.load(json_object[member_name][0], parsed_classes)
+
             new_member = ParsedMember(member_name)
             self.members.append(new_member)
             new_member.load(json_object[member_name])

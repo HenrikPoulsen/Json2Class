@@ -125,6 +125,8 @@ def _capitalize(obj):
     :param obj:
     :return:
     """
+    if obj.__len__() < 2:
+        return obj
     if obj == "string" or obj == "float" or obj == "int":
         return obj
     return obj[0].upper() + obj[1:]

@@ -11,7 +11,10 @@ class ParsedMember():
         member_type = type(json_object)
 
         if member_type is list:
-            self.type = self._member_type(member_type, type(json_object[0]))
+            if json_object.__len__() > 0:
+                self.type = self._member_type(member_type, type(json_object[0]))
+            else:
+                self.type = "[]"
         else:
             self.type = self._member_type(member_type)
 
