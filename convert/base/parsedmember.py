@@ -1,3 +1,4 @@
+from collections import OrderedDict
 
 
 class ParsedMember():
@@ -6,24 +7,26 @@ class ParsedMember():
         self.name = name
         self.type = ""
 
-
     def load(self, json_object):
         member_type = type(json_object)
 
         if member_type is list:
-            self._set_member_type(type(json_object[0]))
+            self.type = self._member_type(member_type, type(json_object[0]))
         else:
-            self._set_member_type(member_type)
+            self.type = self._member_type(member_type)
 
-
-    def _set_member_type(self, member_type):
+    def _member_type(self, member_type, sub_type=None):
         if member_type is unicode:
-            self.type = "string"
+            return "string"
         elif member_type is int:
-            self.type = "int"
+            return "int"
         elif member_type is bool:
-            self.type = "bool"
+            return "bool"
         elif member_type is float:
-            self.type = "float"
+            return "float"
+        elif member_type is OrderedDict:
+            return self.name
+        elif member_type is list:
+            return "[{0}]".format(self._member_type(sub_type))
         else:
             raise ImportError("Unknown type {0} for {1}".format(member_type, self.name))

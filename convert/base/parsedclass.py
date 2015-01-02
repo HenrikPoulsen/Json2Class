@@ -19,13 +19,12 @@ class ParsedClass():
             member_type = type(json_object[member_name])
             if member_type is OrderedDict:
                 new_class = ParsedClass(member_name)
-                self.members.append(new_class)
                 parsed_classes.append(new_class)
                 new_class.load(json_object[member_name], parsed_classes)
-            else:
-                new_member = ParsedMember(member_name)
-                self.members.append(new_member)
-                new_member.load(json_object[member_name])
+
+            new_member = ParsedMember(member_name)
+            self.members.append(new_member)
+            new_member.load(json_object[member_name])
 
     @classmethod
     def parse(cls, name, json_object, parsed_classes):

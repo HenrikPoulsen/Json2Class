@@ -33,11 +33,11 @@ class Generator(BaseGenerator):
                 "    public class {1}\n"
                 "    {{\n"
 
-                "").format(self.namespace, _capitalize(self.data))
+                "").format(self.namespace, _capitalize(self.data.name))
 
     def _generate_constructor(self):
         constructor = ("        public {0}(JSONNode jsonObject)\n"
-                        "        {{\n").format(_capitalize(self.data))
+                        "        {{\n").format(_capitalize(self.data.name))
 
         # member initialization
         for member in self.data.members:
@@ -59,9 +59,9 @@ class Generator(BaseGenerator):
 
         for member in self.data.members:
             if isinstance(member, ParsedClass):
-                serializer += "            json[\"{0}\"] = {1}.ToJson();\n".format(member.name, _capitalize(member))
+                serializer += "            json[\"{0}\"] = {1}.ToJson();\n".format(member.name, _capitalize(member.name))
             else:
-                serializer += "            json[\"{0}\"]{2} = {1};\n".format(member.name, _capitalize(member), _json_save_as(member))
+                serializer += "            json[\"{0}\"]{2} = {1};\n".format(member.name, _capitalize(member.name), _json_save_as(member))
 
         serializer += ("            return json;\n"
                        "        }\n")
@@ -74,7 +74,7 @@ class Generator(BaseGenerator):
                 "}\n")
 
 def _member_declaration(member):
-    return "        public {0} {1} {{get; set;}}\n".format(_get_type_name(member), _capitalize(member))
+    return "        public {0} {1} {{get; set;}}\n".format(_get_type_name(member), _capitalize(member.name))
 
 def _member_initialization(member):
     """
@@ -84,9 +84,9 @@ def _member_initialization(member):
     :return:
     """
     if isinstance(member, ParsedClass):
-        return "            {0} = new {0}(jsonObject[\"{1}\"]);\n".format(_capitalize(member), member.name)
+        return "            {0} = new {0}(jsonObject[\"{1}\"]);\n".format(_capitalize(member.name), member.name)
     else:
-        return "            {0} = jsonObject[\"{1}\"]{2};\n".format(_capitalize(member), member.name, _json_load_as(member))
+        return "            {0} = jsonObject[\"{1}\"]{2};\n".format(_capitalize(member.name), member.name, _json_load_as(member))
 
 def _json_load_as(member):
     """
@@ -118,23 +118,29 @@ def _json_save_as(member):
         return ".AsBool"
     return ""
 
+
 def _capitalize(obj):
     """
     Returns the object name with the first letter capitalized (all other untouched).
     :param obj:
     :return:
     """
-    return obj.name[0].upper() + obj.name[1:]
+    if obj == "string" or obj == "float" or obj == "int":
+        return obj
+    return obj[0].upper() + obj[1:]
 
 
-def _get_type_name(obj):
+def _get_type_name(member):
     """
     If a ParsedClass is supplied then it returns the object name with a captialized first letter (myClass => MyClass)
     For ParsedMember it returns the type of the member (myString => string)
+    :type member: ParsedMember
     :param obj:
     :return:
     """
-    if isinstance(obj, ParsedClass):
-        return _capitalize(obj)
-    elif isinstance(obj, ParsedMember):
-        return obj.type
+    if member.type == "string" == member.type == member.type == "float" or member.type == "int":
+        return member.type
+    elif member.type.startswith("["):
+        return "List<{0}>".format(_capitalize(member.type[1:-1]))
+    else:
+        return _capitalize(member.name)
