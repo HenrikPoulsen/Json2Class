@@ -53,26 +53,13 @@ def parse(json_object):
     :param namespace:
     :param languages:
     :param json_object:
-    :rtype: list
+    :rtype: list of [ParsedClass]
     :return:
     """
 
     parsed_data = []
     stripped_filename = os.path.splitext(os.path.basename(json_object["name"]))[0]
     ParsedClass.parse(stripped_filename, json_object["content"], parsed_data)
-
-    # First we get the proper filename for the class and generate the header and footer of the class
-    """for lang in languages:
-        mod = importlib.import_module("convert."+lang+".generator").Generator()
-        stripped_filename = os.path.splitext(os.path.basename(json_object["name"]))[0]
-        file_name = mod.file_name(stripped_filename)
-        output[file_name] = {"mod": mod}
-        output[file_name]["generated"] = [mod.header(namespace, stripped_filename)]
-        output[file_name]["generated"].append("")
-        output[file_name]["generated"].append(mod.footer())
-
-    # Now we start iterating the json object to generate our class content
-    _parse_type(json_object["content"], output)"""
 
     return parsed_data
 
