@@ -1,0 +1,17 @@
+{
+  "name": "Incognito",
+  "age": 32,
+  "country": "Sweden",
+  "family": [{
+                "name": "Mom",
+                "age": 57,
+                "country": "Sweden",
+                "family": []
+            },
+            {
+                "name": "Dad",
+                "age": 65,
+                "country": "Sweden",
+                "family": []
+            }]
+}
