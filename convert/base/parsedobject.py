@@ -1,8 +1,14 @@
 from collections import OrderedDict
+from enum import Enum
 
 
-class ParsedObjectType:
-    Unknown, Array, String, Int, Float, Object = range(6)
+class ParsedObjectType(Enum):
+    Unknown = 0
+    Int = 1
+    Float = 2
+    String = 3
+    Object = 4
+    Array = 5
 
 
 class ParsedObject():
@@ -81,7 +87,7 @@ class ParsedObject():
             self.data.append(member)
 
     def _load_annotation(self, key, value):
-        if key == "@class":
+        if key == "@name":
             self.name = value
         elif key == "@skip_generate":
             self.skip = True

@@ -3,7 +3,7 @@ import glob
 import json
 import importlib
 from collections import OrderedDict
-from base.parsedclass import ParsedClass
+from base.parsedobject import ParsedObject, ParsedObjectType
 
 
 def run(namespace, targets, json_path):
@@ -31,7 +31,7 @@ def run(namespace, targets, json_path):
     #    files = load_files(targets[lang])
 
 
-def generate(namespace, languages, parsed_class_list):
+def generate(namespace, languages, parsed_object):
     """
     Generates a list of content which should be saved to disk
     :param namespace:
@@ -39,11 +39,29 @@ def generate(namespace, languages, parsed_class_list):
     :param parsed_class_list:
     :return:
     """
-    content = []
+    generators = []
     for lang in languages:
-        generator = importlib.import_module("convert."+lang+".generator").Generator()
-        for parsed_class in parsed_class_list:
-            content.append({"name": parsed_class.name, "content": generator.generateCode(namespace, parsed_class)})
+        generators.append(importlib.import_module("convert."+lang+".generator").Generator())
+        #for parsed_class in parsed_class_list:
+        #    content.append({"name": parsed_class.name, "content": generator.generateCode(namespace, parsed_class)})
+
+    content = _generate_class(namespace, generators, parsed_object)
+
+    return content
+
+def _generate_class(namespace, generators, parsed_object):
+    if parsed_object.skip:
+        print "ParsedObject {0} is marked with skip so wont generate a file for this one".format(parsed_object.name)
+
+    content = []
+
+    for obj in parsed_object.data:
+        if obj.type == ParsedObjectType.Object:
+            content.extend(_generate_class(namespace, generators, obj))
+
+    print "Generating code for " + parsed_object.name
+    for generator in generators:
+        content.append({"name": parsed_object.name, "content": generator.generateCode(namespace, parsed_object)})
 
     return content
 
@@ -59,9 +77,9 @@ def parse(json_object):
 
     parsed_data = []
     stripped_filename = os.path.splitext(os.path.basename(json_object["name"]))[0]
-    ParsedClass.parse(stripped_filename, json_object["content"], parsed_data)
+    #ParsedClass.parse(stripped_filename, json_object["content"], parsed_data)
 
-    return parsed_data
+    return ParsedObject(stripped_filename, json_object["content"])
 
 def _save_to_disk(result, targets):
     for lang in targets.keys():

@@ -1,5 +1,5 @@
 from convert.base.generator import BaseGenerator
-from convert.base.parsedclass import ParsedClass
+from convert.base.parsedobject import *
 from convert.base.parsedmember import ParsedMember
 
 
@@ -40,7 +40,7 @@ class Generator(BaseGenerator):
                         "        {{\n").format(_capitalize(self.data.name))
 
         # member initialization
-        for member in self.data.members:
+        for member in self.data.data:
             constructor += _member_initialization(member)
 
         constructor += "        }\n\n"
@@ -48,7 +48,7 @@ class Generator(BaseGenerator):
 
     def _generate_properties(self):
         properties = ""
-        for member in self.data.members:
+        for member in self.data.data:
             properties += _member_declaration(member)
         return properties
 
@@ -57,8 +57,8 @@ class Generator(BaseGenerator):
                       "        {\n"
                       "            var json = JSON.Parse(\"{}\");\n")
 
-        for member in self.data.members:
-            if isinstance(member, ParsedClass):
+        for member in self.data.data:
+            if member.type == ParsedObjectType.Object:
                 serializer += "            json[\"{0}\"] = {1}.ToJson();\n".format(member.name, _capitalize(member.name))
             else:
                 serializer += "            json[\"{0}\"]{2} = {1};\n".format(member.name, _capitalize(member.name), _json_save_as(member))
@@ -83,7 +83,7 @@ def _member_initialization(member):
     :param member:
     :return:
     """
-    if isinstance(member, ParsedClass):
+    if member.type == ParsedObjectType.Object:
         return "            {0} = new {0}(jsonObject[\"{1}\"]);\n".format(_capitalize(member.name), member.name)
     else:
         return "            {0} = jsonObject[\"{1}\"]{2};\n".format(_capitalize(member.name), member.name, _json_load_as(member))
@@ -140,9 +140,9 @@ def _get_type_name(member):
     :param obj:
     :return:
     """
-    if member.type == "string" == member.type == member.type == "float" or member.type == "int":
-        return member.type
-    elif member.type.startswith("["):
-        return "List<{0}>".format(_capitalize(member.type[1:-1]))
+    if member.type == ParsedObjectType.String or member.type == ParsedObjectType.Int or member.type == ParsedObjectType.Float:
+        return member.type.name.lower()
+    elif member.type == ParsedObjectType.Array:
+        return "List<{0}>".format(_get_type_name(member.data[0]))
     else:
         return _capitalize(member.name)
