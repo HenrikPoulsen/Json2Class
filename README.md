@@ -1,3 +1,3 @@
-Json2Whatever
+Json2Class
 =============
 Hello
