@@ -1,6 +1,5 @@
 import unittest
 from convert import convert
-import tempfile
 
 class TestConvert(unittest.TestCase):
     def testEmptyJsonParse(self):

@@ -2,10 +2,11 @@ from collections import OrderedDict
 
 
 class ParsedMember():
-    def __init__(self, name):
+    def __init__(self, name, parent):
         #print "Created member {0}".format(name)
         self.name = name
         self.type = ""
+        self.parent = parent
 
     def load(self, json_object):
         member_type = type(json_object)

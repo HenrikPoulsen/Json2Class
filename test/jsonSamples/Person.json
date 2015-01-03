@@ -1,14 +1,19 @@
 {
+  "@class": "Person",
   "name": "Incognito",
   "age": 32,
   "country": "Sweden",
   "family": [{
+                "@class": "Person",
+				"@skip_generate": "",
                 "name": "Mom",
                 "age": 57,
                 "country": "Sweden",
                 "family": []
             },
             {
+                "@class": "Person",
+				"@skip_generate": "",
                 "name": "Dad",
                 "age": 65,
                 "country": "Sweden",
