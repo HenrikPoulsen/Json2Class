@@ -65,7 +65,7 @@ class Generator(BaseGenerator):
     def _generate_serializers(self):
         serializer = ("\n        public JSONNode ToJson()\n"
                       "        {\n"
-                      "            var json = JSON.Parse(\"{}\");\n")
+                      "            var json = new JSONClass();\n")
 
         for member in self.data.data:
             if member.type == ParsedObjectType.Object:
