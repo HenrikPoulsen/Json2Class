@@ -52,16 +52,23 @@ def generate(namespace, languages, parsed_object):
 def _generate_class(namespace, generators, parsed_object):
     if parsed_object.skip:
         print "ParsedObject {0} is marked with skip so wont generate a file for this one".format(parsed_object.name)
+        return []
+
+    print "Generating {0}.{1}".format(namespace, parsed_object.name)
 
     content = []
 
-    for obj in parsed_object.data:
-        if obj.type == ParsedObjectType.Object:
-            content.extend(_generate_class(namespace, generators, obj))
+    if parsed_object.type == ParsedObjectType.Object or parsed_object.type == ParsedObjectType.Array:
+        for obj in parsed_object.data:
+            if obj.type == ParsedObjectType.Object:
+                content.extend(_generate_class(namespace, generators, obj))
+            elif obj.type == ParsedObjectType.Array:
+                for child in obj.data:
+                    content.extend(_generate_class(namespace, generators, child))
 
-    print "Generating code for " + parsed_object.name
-    for generator in generators:
-        content.append({"name": parsed_object.name, "content": generator.generateCode(namespace, parsed_object)})
+        print "Generating {0}.{1}".format(namespace, parsed_object.name)
+        for generator in generators:
+            content.append({"name": parsed_object.name, "content": generator.generateCode(namespace, parsed_object)})
 
     return content
 

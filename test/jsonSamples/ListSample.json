@@ -1,0 +1,6 @@
+{
+    "intList": [1],
+    "floatLIst":  [3.7],
+    "stringList":  ["Hello"],
+    "objectList":  [{"@class": "MyObject", "name":  "Moo"}]
+}

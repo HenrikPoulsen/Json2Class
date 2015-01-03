@@ -7,8 +7,9 @@ class ParsedObjectType(Enum):
     Int = 1
     Float = 2
     String = 3
-    Object = 4
-    Array = 5
+    Bool = 4
+    Object = 5
+    Array = 6
 
 
 class ParsedObject():
@@ -27,9 +28,7 @@ class ParsedObject():
         self.type = ParsedObjectType.Unknown
         self.skip = False
 
-        print "Loading " + name
         self._load(json)
-        print "Done loading " + name
 
     def _load(self, json):
         """
@@ -53,6 +52,8 @@ class ParsedObject():
             return ParsedObjectType.Int
         if t is float:
             return ParsedObjectType.Float
+        if t is bool:
+            return ParsedObjectType.Bool
         if t is list:
             return ParsedObjectType.Array
         if t is unicode or t is str:
