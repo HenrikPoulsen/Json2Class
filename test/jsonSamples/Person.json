@@ -4,7 +4,7 @@
   "country": "Sweden",
   "family": [{
                 "@name": "Person",
-				"@skip_generate": "",
+                "@skip_generate": "",
                 "name": "Mom",
                 "age": 57,
                 "country": "Sweden",
@@ -12,7 +12,7 @@
             },
             {
                 "@name": "Person",
-				"@skip_generate": "",
+                "@skip_generate": "",
                 "name": "Dad",
                 "age": 65,
                 "country": "Sweden",
