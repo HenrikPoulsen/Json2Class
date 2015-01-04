@@ -1,6 +1,7 @@
 import unittest
 from convert import convert
 
+
 class TestConvert(unittest.TestCase):
     def testEmptyJsonParse(self):
         generated = convert.parse(convert._load_json_files("./jsonSamples/minimal.json")[0])

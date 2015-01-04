@@ -68,7 +68,7 @@ def _generate_class(namespace, generators, parsed_object):
 
         print "Generating {0}.{1}".format(namespace, parsed_object.name)
         for generator in generators:
-            content.append({"name": parsed_object.name, "content": generator.generateCode(namespace, parsed_object)})
+            content.append({"name": parsed_object.name, "content": generator.generate_code(namespace, parsed_object), "generator": generator})
 
     return content
 
@@ -89,12 +89,16 @@ def parse(json_object):
     return ParsedObject(stripped_filename, json_object["content"])
 
 def _save_to_disk(result, targets):
-    for lang in targets.keys():
-        generator = importlib.import_module("convert."+lang+".generator").Generator()
-        for f in result:
-            out = open(targets[lang] + "/" + generator.file_name(f["name"]), "w+")
-            out.write(f["content"])
-            out.close()
+    for f in result:
+        out_path = ""
+        for target in targets:
+            if target in f["generator"].__module__:
+                out_path = targets[target]
+        out = open(out_path + "/" + f["generator"].file_name(f["name"]), "w+")
+        out.write(f["content"])
+        out.close()
+    #for lang in targets.keys():
+    #    generator = importlib.import_module("convert."+lang+".generator").Generator()
 
 
 def _parse_dict(obj, output, name=None):

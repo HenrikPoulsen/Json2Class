@@ -1,3 +1,10 @@
 *.pyc
 .idea/workspace.xml
+.idea/misc.xml.idea/misc.xml
+test/SampleProjects/CsSample/packages/
+test/SampleProjects/CsSample/bin/
+test/SampleProjects/CsSample/obj/
+test/SampleProjects/PySample/.idea/misc.xml
+*.suo
+test/SampleProjects/PySample/.idea/workspace.xml
 .idea/misc.xml
