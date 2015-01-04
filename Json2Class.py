@@ -13,6 +13,8 @@ def main():
                         default="Json2Whatever")
     parser.add_argument("--cs-out",
                         help='Folder where the generated C# file(s) should be placed')
+    parser.add_argument("--java-out",
+                        help='Folder where the generated Java file(s) should be placed')
     parser.add_argument("--py-out",
                         help='Folder where the generated Python file(s) should be placed')
     args = parser.parse_args()
@@ -23,6 +25,8 @@ def main():
         targets['py'] = args.py_out
     if args.cs_out:
         targets['cs'] = args.cs_out
+    if args.java_out:
+        targets['java'] = args.java_out
 
     convert.run(args.namespace, targets, args.source)
 

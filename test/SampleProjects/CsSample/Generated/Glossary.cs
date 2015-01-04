@@ -6,7 +6,7 @@ using SimpleJSON;
 /* Date: 2015-01-04                                                                */
 /////////////////////////////////////////////////////////////////////////////////////
 
-namespace Json2Whatever
+namespace Generated
 {
     public class Glossary
     {

@@ -6,6 +6,9 @@ It also generates functions which can load and save these objects from json stri
 I like to have static typing since it makes it a lot easier to keep track of what is going on and having classes
 generated from the same source makes it easier to sync changes between frontend/backend if they use different languages.
 
+## Requirements
+You need to have Python 2.7.x and install [enum34](https://pypi.python.org/pypi/enum34) so it can use some proper enums. 
+
 ## Example
 ### Commandline
     Json2Class.py Person.json --cs-out CsGenerated --py-out PyGenerated

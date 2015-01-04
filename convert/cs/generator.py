@@ -25,7 +25,7 @@ class Generator(BaseGenerator):
 
     def _generate_json_constructor(self):
         constructor = ("        public {0}(JSONNode jsonObject)\n"
-                        "        {{\n").format(_capitalize(self.data.name))
+                       "        {{\n").format(_capitalize(self.data.name))
 
         # member initialization
         for member in self.data.data:
@@ -92,7 +92,7 @@ def _serialize_array_member(member):
         serializer += "                json[\"{0}\"].Add(item{1});\n".format(member.name, _json_save_as(member.data[0]))
     else:
         serializer += "                json[\"{0}\"].Add(new JSONData(item));\n".format(member.name)
-    serializer +="            }\n"
+    serializer += "            }\n"
     return serializer
 
 def _member_declaration(member):
