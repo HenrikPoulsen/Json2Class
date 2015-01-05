@@ -1,12 +1,20 @@
+from factorygenerator import BaseFactoryGenerator
 
 class BaseGenerator():
     """
     This is the generator base class which is basically just a set of methods that should be implemented for the
     different languages
     """
-    def __init__(self):
+    def __init__(self, factories):
+        """
+
+        :type engines: list of BaseFactoryGenerator
+        :return:
+        """
         self.data = None
         self.namespace = ""
+        self.engines = []
+        self.factories = factories
 
     def generate_code(self, namespace, data):
         """
@@ -16,7 +24,11 @@ class BaseGenerator():
         """
         self.data = data
         self.namespace = namespace
-        return "".join([self._generate_header(), self._generate_default_constructor(), self._generate_json_constructor(), self._generate_member_access(), self._generate_serializer(), self._generate_footer()])
+        result = "".join([self._generate_header(), self._generate_default_constructor(), self._generate_json_constructor(), self._generate_member_access(), self._generate_serializer()])
+        for factory in self.factories:
+            result += factory.generate(self.data)
+        result += self._generate_footer()
+        return result
 
     def file_name(self, name):
         """

@@ -2,4 +2,6 @@ from convert.base.factorygenerator import BaseFactoryGenerator
 
 
 class FactoryGenerator(BaseFactoryGenerator):
-    pass
+    def generate(self, data):
+        return ""
+
