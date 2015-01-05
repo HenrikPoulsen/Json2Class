@@ -1,4 +1,3 @@
-from parsedobject import ParsedObject
 
 class BaseGenerator():
     """

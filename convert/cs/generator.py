@@ -1,6 +1,5 @@
 from convert.base.generator import BaseGenerator
 from convert.base.parsedobject import *
-from convert.base.parsedmember import ParsedMember
 import datetime
 
 
