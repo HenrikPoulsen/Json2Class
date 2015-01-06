@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using Json2Whatever;
+using Generated;
 using SimpleJSON;
 
 namespace CsSample
@@ -11,17 +11,17 @@ namespace CsSample
     {
         static void Main(string[] args)
         {
-            var myPerson = new Person(SimpleJSON.JSONNode.Parse(File.ReadAllText("..\\..\\..\\..\\jsonSamples\\Person.json")));
+            var myPerson = Person.SimpleJsonFactory.FromJson(SimpleJSON.JSONNode.Parse(File.ReadAllText("..\\..\\..\\..\\jsonSamples\\Person.json")));
             Console.WriteLine(myPerson.Family.Count);
 
             myPerson.Family.Add(new Person());
 
-            var outJson = myPerson.ToJson();
+            var outJson = Person.SimpleJsonFactory.ToJson(myPerson);
             Console.WriteLine(outJson.ToString());
 
             var listSample = new ListSample();
             listSample.ObjectList.Add(new ObjectList{ Name = "Hello"});
-            outJson = listSample.ToJson();
+            outJson = ListSample.SimpleJsonFactory.ToJson(listSample);
             Console.WriteLine(outJson.ToString());
         }
     }

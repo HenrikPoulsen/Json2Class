@@ -42,30 +42,13 @@ def generate(namespace, targets, parsed_object):
         generator_path = "convert.{0}.generator".format(lang)
         factories = []
         for engine in targets[lang]['engines']:
-            engine_path = "convert.{0}.{1}.enginegenerator".format(lang, engine)
             factory_path = "convert.{0}.{1}.factorygenerator".format(lang, engine)
 
-            engines.append(importlib.import_module(engine_path).EngineGenerator())
             factories.append(importlib.import_module(factory_path).FactoryGenerator())
 
         generators.append(importlib.import_module(generator_path).Generator(factories))
 
     content = _generate_class(namespace, generators, parsed_object)
-    content.extend(_generate_engine(namespace, engines))
-
-    return content
-
-
-def _generate_engine(namespace, engines):
-    """
-
-    :type namespace: str
-    :type engines: list of BaseEngineGenerator
-    :return:
-    """
-    content = []
-    for engine in engines:
-        content.append({"name": engine.file_name(), "content": engine.generate(namespace), "module": engine.__module__})
 
     return content
 

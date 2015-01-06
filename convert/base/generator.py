@@ -24,10 +24,15 @@ class BaseGenerator():
         """
         self.data = data
         self.namespace = namespace
-        result = "".join([self._generate_header(), self._generate_default_constructor(), self._generate_json_constructor(), self._generate_member_access(), self._generate_serializer()])
-        for factory in self.factories:
-            result += factory.generate(self.data)
-        result += self._generate_footer()
+        result = "".join(
+        [
+            self._generate_header(),
+            self._generate_default_constructor(),
+            self._generate_json_constructor(),
+            self._generate_member_access(),
+            self._generate_factory(),
+            self._generate_footer()
+        ])
         return result
 
     def file_name(self, name):
@@ -71,13 +76,16 @@ class BaseGenerator():
         """
         raise NotImplementedError()
 
-    def _generate_serializer(self):
+    def _generate_factory(self):
         """
         Code for a function which converts a class instance to a Json Object
         :rtype: string
         :return:
         """
-        raise NotImplementedError()
+        result = ""
+        for factory in self.factories:
+            result += factory.generate(self.data, self.namespace)
+        return result
 
     def _generate_footer(self):
         """

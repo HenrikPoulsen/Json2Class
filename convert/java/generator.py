@@ -38,7 +38,7 @@ class Generator(BaseGenerator):
         constructor += "    }\n\n"
         return constructor
 
-    def _generate_serializer(self):
+    def _generate_factory(self):
         serializer = ("\n    public JSONObject toJson() {\n"
                       "        JSONObject json = new JSONObject();\n")
 

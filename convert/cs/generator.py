@@ -23,15 +23,7 @@ class Generator(BaseGenerator):
         return properties
 
     def _generate_json_constructor(self):
-        constructor = ("        public {0}(JSONNode jsonObject)\n"
-                       "        {{\n").format(_capitalize(self.data.name))
-
-        # member initialization
-        for member in self.data.data:
-            constructor += _member_initialization(member)
-
-        constructor += "        }\n\n"
-        return constructor
+        return ""
 
     def file_name(self, name):
         return name[0].upper() + name[1:] + ".cs"
@@ -57,72 +49,9 @@ class Generator(BaseGenerator):
                    "    {{\n").format(self.namespace, _capitalize(self.data.name), date_str)
         return result
 
-    def _generate_serializer(self):
-        serializer = ("\n        public JSONNode ToJson()\n"
-                      "        {\n"
-                      "            var json = new JSONClass();\n")
-
-        for member in self.data.data:
-            if member.type == ParsedObjectType.Object:
-                serializer += _serialize_object_member(member)
-            elif member.type == ParsedObjectType.Array:
-                serializer += _serialize_array_member(member)
-            else:
-                serializer += "            json[\"{0}\"] = new JSONData({1});\n".format(member.name, _capitalize(member.name))
-
-        serializer += ("            return json;\n"
-                       "        }\n")
-
-        return serializer
-
     def _generate_footer(self):
         return ("    }\n"
                 "}\n")
-
-
-def _serialize_object_member(member):
-    return "            json[\"{0}\"] = {1}.ToJson();\n".format(member.name, _capitalize(member.name))
-
-
-def _serialize_array_member(member):
-    serializer = "            foreach(var item in {0})\n".format(_capitalize(member.name))
-    serializer += "            {\n"
-    if member.data[0].type == ParsedObjectType.Object:
-        serializer += "                json[\"{0}\"].Add(item{1});\n".format(member.name, _json_save_as(member.data[0]))
-    else:
-        serializer += "                json[\"{0}\"].Add(new JSONData(item));\n".format(member.name)
-    serializer += "            }\n"
-    return serializer
-
-def _member_declaration(member):
-    return "        public {0} {1} {{get; set;}}\n".format(_get_type_name(member), _capitalize(member.name))
-
-
-def _member_initialization(member):
-    """
-    Generated the code for initialization of the members in the constructor.
-    :type member: ParsedMember
-    :param member:
-    :return:
-    """
-    json_container_string = "jsonObject[\"{0}\"]".format(member.name)
-
-    if member.type == ParsedObjectType.Object:
-        return "            {0} = {1};\n".format(_capitalize(member.name), _get_member_initialization_string(member, json_container_string))
-    elif member.type == ParsedObjectType.Array:
-        result = ("            {0} = {1}();\n"
-                  "            foreach(JSONNode item in jsonObject[\"{2}\"].AsArray)\n"
-                  "            {{\n").format(_capitalize(member.name), _get_member_initialization_string(member, json_container_string), member.name)
-        child = member.data[0]
-
-        if child.type == ParsedObjectType.Object:
-            result += "                {0}.Add({1});\n".format(_capitalize(member.name), _get_member_initialization_string(child, "item"))
-        else:
-            result += "                {0}.Add(item{1});\n".format(_capitalize(member.name), _json_load_as(child))
-        result += "            }\n"
-        return result
-    else:
-        return "            {0} = {1};\n".format(_capitalize(member.name), _get_member_initialization_string(member, json_container_string))
 
 
 def _get_member_initialization_string(member, json_container):
@@ -130,42 +59,10 @@ def _get_member_initialization_string(member, json_container):
         return "new {0}({1})".format(_capitalize(member.name), json_container)
     if member.type == ParsedObjectType.Array:
         return "new {0}".format( _get_type_name(member))
-    return "{0}{1}".format(json_container, _json_load_as(member))
 
 
-def _json_load_as(member):
-    """
-    Returns the property to be called when loading this object from a JSONNode.
-    For example: MyFloat = jsonObject["myFloat"].AsFloat;
-    :param member:
-    :return:
-    """
-    if member.type == ParsedObjectType.Float:
-        return ".AsFloat"
-    elif member.type == ParsedObjectType.Int:
-        return ".AsInt"
-    elif member.type == ParsedObjectType.Bool:
-        return ".AsBool"
-    return ""
-
-
-def _json_save_as(member):
-    """
-    Returns the property to be called when loading this object from a JSONNode.
-    For example: MyFloat = jsonObject["myFloat"].AsFloat;
-    :param member:
-    :return:
-    """
-    if member.type == ParsedObjectType.Float:
-        return ".AsFloat"
-    elif member.type == ParsedObjectType.Int:
-        return ".AsInt"
-    elif member.type == ParsedObjectType.Bool:
-        return ".AsBool"
-    elif member.type == ParsedObjectType.Object:
-        return ".ToJson()"
-    return ""
-
+def _member_declaration(member):
+    return "        public {0} {1} {{get; set;}}\n".format(_get_type_name(member), _capitalize(member.name))
 
 def _capitalize(obj):
     """

@@ -11,12 +11,13 @@ class BaseEngineGenerator():
             self._generate_read_int(),
             self._generate_read_float(),
             self._generate_read_bool(),
-            self._generate_read_object(),
+            self._generate_read_array(),
             self._generate_write_string(),
             self._generate_write_int(),
             self._generate_write_float(),
             self._generate_write_bool(),
-            self._generate_write_object(),
+            self._generate_write_array(),
+            self._generate_footer()
         ])
 
     def file_name(self):
@@ -37,9 +38,6 @@ class BaseEngineGenerator():
     def _generate_read_bool(self):
         raise NotImplementedError()
 
-    def _generate_read_object(self):
-        raise NotImplementedError()
-
     def _generate_write_string(self):
         raise NotImplementedError()
 
@@ -52,5 +50,11 @@ class BaseEngineGenerator():
     def _generate_write_bool(self):
         raise NotImplementedError()
 
-    def _generate_write_object(self):
+    def _generate_read_array(self):
+        raise NotImplementedError()
+
+    def _generate_write_array(self):
+        raise NotImplementedError()
+
+    def _generate_footer(self):
         raise NotImplementedError()

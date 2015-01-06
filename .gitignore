@@ -12,3 +12,6 @@ test/SampleProjects/javaSample/.idea/misc.xml
 test/SampleProjects/javaSample/out/
 test/SampleProjects/javaSample/.idea/uiDesigner.xml
 test/SampleProjects/javaSample/.idea/workspace.xml
+test/SampleProjects/CsSample/Test/bin/
+test/SampleProjects/CsSample/Test/obj/
+test/SampleProjects/CsSample/TestResults/

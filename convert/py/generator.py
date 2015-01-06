@@ -50,7 +50,7 @@ class Generator(BaseGenerator):
 
         return constructor
 
-    def _generate_serializer(self):
+    def _generate_factory(self):
         result = ("    def to_json(self):\n"
                   "        \"\"\":rtype: str\"\"\"\n"
                   "        return {0}.JsonEncoder().encode(self)\n\n"
