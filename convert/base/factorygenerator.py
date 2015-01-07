@@ -4,6 +4,9 @@ class BaseFactoryGenerator():
         self.data = None
         self.namespace = None
 
+    def generate_import(self):
+        raise NotImplementedError()
+
     def generate(self, data, namespace):
         raise NotImplementedError()
 

@@ -3,6 +3,9 @@ from convert.base.parsedobject import *
 
 
 class FactoryGenerator(BaseFactoryGenerator):
+    def generate_import(self):
+        return "using SimpleJSON;\n"
+
     def generate(self, data, namespace):
         """
 

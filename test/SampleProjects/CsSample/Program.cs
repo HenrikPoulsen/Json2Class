@@ -11,7 +11,7 @@ namespace CsSample
     {
         static void Main(string[] args)
         {
-            var myPerson = Person.SimpleJsonFactory.FromJson(SimpleJSON.JSONNode.Parse(File.ReadAllText("..\\..\\..\\..\\jsonSamples\\Person.json")));
+            var myPerson = Person.NewtonsoftFactory.FromJson(File.ReadAllText("..\\..\\..\\..\\jsonSamples\\Person.json"));
             Console.WriteLine(myPerson.Family.Count);
 
             myPerson.Family.Add(new Person());
