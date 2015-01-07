@@ -12,15 +12,6 @@ class Glossary:
         self._title = ""
         self._gloss_div = None
 
-    @classmethod
-    def load(cls, json_obj):
-        """:type json_obj: dict
-           :rtype: Glossary"""
-        obj = Glossary()
-        obj._title = json_obj["title"]
-        obj._gloss_div = GlossDiv(json_obj["glossDiv"])
-        return obj
-
     @property
     def title(self):
         """:rtype: str"""
@@ -42,14 +33,27 @@ class Glossary:
         self._gloss_div = value
 
 
-    def to_json(self):
-        """:rtype: str"""
-        return Glossary.JsonEncoder().encode(self)
 
-    class JsonEncoder(json.JSONEncoder):
-        def default(self, obj):
-            d = {
-                'title': obj.title,
-            'glossDiv': obj.gloss_div.to_json(),
-            }
-            return d
+    class JsonFactory():
+        @staticmethod
+        def to_json(self):
+            """:rtype: dict"""
+            return Glossary.JsonEncoder().encode(self)
+
+        class JsonEncoder(json.JSONEncoder):
+            def default(self, obj):
+                d = {
+                    'title': obj.title,
+                    'glossDiv': obj.gloss_div.to_json(),
+                }
+                return d
+
+        @staticmethod
+        def from_json(cls, json_obj):
+            """:type json_obj: dict
+               :rtype: Glossary"""
+            obj = Glossary()
+            obj._title = json_obj["title"]
+            obj._gloss_div = GlossDiv(json_obj["glossDiv"])
+            return obj
+

@@ -11,18 +11,22 @@ public class GlossDiv{
     public GlossDiv() {
         title = "";
     }
-    public GlossDiv(JSONObject jsonObject) {
-        title = (String)jsonObject.get("title");
-        glossList = new GlossList((JSONObject)jsonObject.get("glossList"));
-    }
-
     public String title;
     public GlossList glossList;
 
-    public JSONObject toJson() {
-        JSONObject json = new JSONObject();
-        json.put("title", title);
-        json.put("glossList", glossList.toJson());
-        return json;
+    public static class JsonSimpleFactory
+    {
+        public static JSONObject toJson(GlossDiv obj) {
+            JSONObject json = new JSONObject();
+            json.put("title", obj.title);
+            json.put("glossList", GlossList.JsonSimpleFactory.toJson(obj.glossList));
+            return json;
+        }
+        public static GlossDiv fromJson(JSONObject jsonObject) {
+            GlossDiv obj = new GlossDiv();
+            obj.title = (String)jsonObject.get("title");
+            obj.glossList = GlossList.JsonSimpleFactory.fromJson((JSONObject)jsonObject.get("glossList"));
+            return obj;
+        }
     }
 }

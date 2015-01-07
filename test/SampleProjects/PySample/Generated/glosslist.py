@@ -11,14 +11,6 @@ class GlossList:
     def __init__(self):
         self._gloss_entry = None
 
-    @classmethod
-    def load(cls, json_obj):
-        """:type json_obj: dict
-           :rtype: GlossList"""
-        obj = GlossList()
-        obj._gloss_entry = GlossEntry(json_obj["glossEntry"])
-        return obj
-
     @property
     def gloss_entry(self):
         """:rtype: GlossEntry"""
@@ -30,13 +22,25 @@ class GlossList:
         self._gloss_entry = value
 
 
-    def to_json(self):
-        """:rtype: str"""
-        return GlossList.JsonEncoder().encode(self)
 
-    class JsonEncoder(json.JSONEncoder):
-        def default(self, obj):
-            d = {
-            'glossEntry': obj.gloss_entry.to_json(),
-            }
-            return d
+    class JsonFactory():
+        @staticmethod
+        def to_json(self):
+            """:rtype: dict"""
+            return GlossList.JsonEncoder().encode(self)
+
+        class JsonEncoder(json.JSONEncoder):
+            def default(self, obj):
+                d = {
+                    'glossEntry': obj.gloss_entry.to_json(),
+                }
+                return d
+
+        @staticmethod
+        def from_json(cls, json_obj):
+            """:type json_obj: dict
+               :rtype: GlossList"""
+            obj = GlossList()
+            obj._gloss_entry = GlossEntry(json_obj["glossEntry"])
+            return obj
+

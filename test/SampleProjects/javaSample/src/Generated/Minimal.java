@@ -10,12 +10,16 @@ import org.json.simple.JSONObject;
 public class Minimal{
     public Minimal() {
     }
-    public Minimal(JSONObject jsonObject) {
-    }
 
-
-    public JSONObject toJson() {
-        JSONObject json = new JSONObject();
-        return json;
+    public static class JsonSimpleFactory
+    {
+        public static JSONObject toJson(Minimal obj) {
+            JSONObject json = new JSONObject();
+            return json;
+        }
+        public static Minimal fromJson(JSONObject jsonObject) {
+            Minimal obj = new Minimal();
+            return obj;
+        }
     }
 }

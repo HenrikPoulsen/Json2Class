@@ -15,17 +15,6 @@ public class GlossEntry{
         abbrev = "";
         glossSee = "";
     }
-    public GlossEntry(JSONObject jsonObject) {
-        id = (Integer)jsonObject.get("id");
-        testFloat = (Float)jsonObject.get("testFloat");
-        sortAs = (String)jsonObject.get("sortAs");
-        glossTerm = (String)jsonObject.get("glossTerm");
-        acronym = (String)jsonObject.get("acronym");
-        abbrev = (String)jsonObject.get("abbrev");
-        glossDef = new GlossDef((JSONObject)jsonObject.get("glossDef"));
-        glossSee = (String)jsonObject.get("glossSee");
-    }
-
     public int id;
     public float testFloat;
     public String sortAs;
@@ -35,16 +24,31 @@ public class GlossEntry{
     public GlossDef glossDef;
     public String glossSee;
 
-    public JSONObject toJson() {
-        JSONObject json = new JSONObject();
-        json.put("id", id);
-        json.put("testFloat", testFloat);
-        json.put("sortAs", sortAs);
-        json.put("glossTerm", glossTerm);
-        json.put("acronym", acronym);
-        json.put("abbrev", abbrev);
-        json.put("glossDef", glossDef.toJson());
-        json.put("glossSee", glossSee);
-        return json;
+    public static class JsonSimpleFactory
+    {
+        public static JSONObject toJson(GlossEntry obj) {
+            JSONObject json = new JSONObject();
+            json.put("id", obj.id);
+            json.put("testFloat", obj.testFloat);
+            json.put("sortAs", obj.sortAs);
+            json.put("glossTerm", obj.glossTerm);
+            json.put("acronym", obj.acronym);
+            json.put("abbrev", obj.abbrev);
+            json.put("glossDef", GlossDef.JsonSimpleFactory.toJson(obj.glossDef));
+            json.put("glossSee", obj.glossSee);
+            return json;
+        }
+        public static GlossEntry fromJson(JSONObject jsonObject) {
+            GlossEntry obj = new GlossEntry();
+            obj.id = (Integer)jsonObject.get("id");
+            obj.testFloat = (Float)jsonObject.get("testFloat");
+            obj.sortAs = (String)jsonObject.get("sortAs");
+            obj.glossTerm = (String)jsonObject.get("glossTerm");
+            obj.acronym = (String)jsonObject.get("acronym");
+            obj.abbrev = (String)jsonObject.get("abbrev");
+            obj.glossDef = GlossDef.JsonSimpleFactory.fromJson((JSONObject)jsonObject.get("glossDef"));
+            obj.glossSee = (String)jsonObject.get("glossSee");
+            return obj;
+        }
     }
 }

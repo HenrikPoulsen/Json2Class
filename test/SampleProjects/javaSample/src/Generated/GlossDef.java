@@ -15,27 +15,31 @@ public class GlossDef{
         para = "";
         glossSeeAlso = new ArrayList<String>();
     }
-    public GlossDef(JSONObject jsonObject) {
-        para = (String)jsonObject.get("para");
-        glossSeeAlso = new ArrayList<String>();
-        for(Object item : (JSONArray)jsonObject.get("glossSeeAlso")) {
-            glossSeeAlso.add((String)item);
-        }
-    }
-
     public String para;
     public List<String> glossSeeAlso;
 
-    public JSONObject toJson() {
-        JSONObject json = new JSONObject();
-        JSONArray tempArray;
-        json.put("para", para);
+    public static class JsonSimpleFactory
+    {
+        public static JSONObject toJson(GlossDef obj) {
+            JSONObject json = new JSONObject();
+            JSONArray tempArray;
+            json.put("para", obj.para);
 
-        tempArray = new JSONArray();
-        for(String item : glossSeeAlso){
-            tempArray.add(item);
+            tempArray = new JSONArray();
+            for(String item : obj.glossSeeAlso){
+                tempArray.add(item);
+            }
+            json.put("glossSeeAlso", tempArray);
+            return json;
         }
-        json.put("glossSeeAlso", tempArray);
-        return json;
+        public static GlossDef fromJson(JSONObject jsonObject) {
+            GlossDef obj = new GlossDef();
+            obj.para = (String)jsonObject.get("para");
+            obj.glossSeeAlso = new ArrayList<String>();
+            for(Object item : (JSONArray)jsonObject.get("glossSeeAlso")) {
+                obj.glossSeeAlso.add((String)item);
+            }
+            return obj;
+        }
     }
 }

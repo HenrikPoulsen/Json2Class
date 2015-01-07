@@ -22,9 +22,6 @@ class Generator(BaseGenerator):
             properties += _member_declaration(member)
         return properties
 
-    def _generate_json_constructor(self):
-        return ""
-
     def file_name(self, name):
         return name[0].upper() + name[1:] + ".cs"
 

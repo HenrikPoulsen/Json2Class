@@ -11,15 +11,19 @@ public class ObjectList{
     public ObjectList() {
         name = "";
     }
-    public ObjectList(JSONObject jsonObject) {
-        name = (String)jsonObject.get("name");
-    }
-
     public String name;
 
-    public JSONObject toJson() {
-        JSONObject json = new JSONObject();
-        json.put("name", name);
-        return json;
+    public static class JsonSimpleFactory
+    {
+        public static JSONObject toJson(ObjectList obj) {
+            JSONObject json = new JSONObject();
+            json.put("name", obj.name);
+            return json;
+        }
+        public static ObjectList fromJson(JSONObject jsonObject) {
+            ObjectList obj = new ObjectList();
+            obj.name = (String)jsonObject.get("name");
+            return obj;
+        }
     }
 }

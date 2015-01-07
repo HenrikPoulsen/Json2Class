@@ -10,20 +10,24 @@ class Minimal:
     def __init__(self):
         pass
 
-    @classmethod
-    def load(cls, json_obj):
-        """:type json_obj: dict
-           :rtype: Minimal"""
-        obj = Minimal()
-        return obj
 
 
-    def to_json(self):
-        """:rtype: str"""
-        return Minimal.JsonEncoder().encode(self)
+    class JsonFactory():
+        @staticmethod
+        def to_json(self):
+            """:rtype: dict"""
+            return Minimal.JsonEncoder().encode(self)
 
-    class JsonEncoder(json.JSONEncoder):
-        def default(self, obj):
-            d = {
-            }
-            return d
+        class JsonEncoder(json.JSONEncoder):
+            def default(self, obj):
+                d = {
+                }
+                return d
+
+        @staticmethod
+        def from_json(cls, json_obj):
+            """:type json_obj: dict
+               :rtype: Minimal"""
+            obj = Minimal()
+            return obj
+

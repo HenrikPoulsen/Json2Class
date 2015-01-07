@@ -16,33 +16,37 @@ public class Person{
         country = "";
         family = new ArrayList<Person>();
     }
-    public Person(JSONObject jsonObject) {
-        name = (String)jsonObject.get("name");
-        age = (Integer)jsonObject.get("age");
-        country = (String)jsonObject.get("country");
-        family = new ArrayList<Person>();
-        for(Object item : (JSONArray)jsonObject.get("family")) {
-            family.add(new Person((JSONObject)item));
-        }
-    }
-
     public String name;
     public int age;
     public String country;
     public List<Person> family;
 
-    public JSONObject toJson() {
-        JSONObject json = new JSONObject();
-        JSONArray tempArray;
-        json.put("name", name);
-        json.put("age", age);
-        json.put("country", country);
+    public static class JsonSimpleFactory
+    {
+        public static JSONObject toJson(Person obj) {
+            JSONObject json = new JSONObject();
+            JSONArray tempArray;
+            json.put("name", obj.name);
+            json.put("age", obj.age);
+            json.put("country", obj.country);
 
-        tempArray = new JSONArray();
-        for(Person item : family){
-            tempArray.add(item.toJson());
+            tempArray = new JSONArray();
+            for(Person item : obj.family){
+                tempArray.add(Person.JsonSimpleFactory.toJson(item));
+            }
+            json.put("family", tempArray);
+            return json;
         }
-        json.put("family", tempArray);
-        return json;
+        public static Person fromJson(JSONObject jsonObject) {
+            Person obj = new Person();
+            obj.name = (String)jsonObject.get("name");
+            obj.age = (Integer)jsonObject.get("age");
+            obj.country = (String)jsonObject.get("country");
+            obj.family = new ArrayList<Person>();
+            for(Object item : (JSONArray)jsonObject.get("family")) {
+                obj.family.add(Person.JsonSimpleFactory.fromJson((JSONObject)item));
+            }
+            return obj;
+        }
     }
 }

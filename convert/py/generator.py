@@ -36,38 +36,10 @@ class Generator(BaseGenerator):
         result += "\n"
         return result
 
-    def _generate_json_constructor(self):
-        constructor = ("    @classmethod\n"
-                       "    def load(cls, json_obj):\n"
-                       "        \"\"\":type json_obj: dict\n"
-                       "           :rtype: {0}\"\"\"\n"
-                       "        obj = {0}()\n").format(_capitalize(self.data.name))
-
-        for member in self.data.data:
-            constructor += _member_load(member)
-
-        constructor += "        return obj\n\n"
-
-        return constructor
-
-    def _generate_factory(self):
-        result = ("    def to_json(self):\n"
-                  "        \"\"\":rtype: str\"\"\"\n"
-                  "        return {0}.JsonEncoder().encode(self)\n\n"
-                  "    class JsonEncoder(json.JSONEncoder):\n"
-                  "        def default(self, obj):\n"
-                  "            d = {{\n").format(_capitalize(self.data.name))
-        for member in self.data.data:
-            result += _member_save(member)
-        result += "            }\n"
-        for member in self.data.data:
-            if member.type == ParsedObjectType.Array:
-                result += _member_save_list(member)
-        result += "            return d"
-        return result
-
     def _generate_header(self):
-        result = "import json\n"
+        result = ""
+        for factory in self.factories:
+            result += factory.generate_import()
         for member in self.data.data:
             if _capitalize(member.name) == _capitalize(self.data.name):
                 # if the member is the same class as the current class then we shouldn't import it
@@ -93,45 +65,6 @@ class Generator(BaseGenerator):
 
     def file_name(self, json_name):
         return json_name.lower() + ".py"
-
-
-def _member_save(member):
-
-    if member.type == ParsedObjectType.Object:
-        return "            '{0}': obj.{1}.to_json(),\n".format(member.name, _camel_case(member.name))
-    if member.type == ParsedObjectType.Array:
-        return "                '{0}': [],\n".format(member.name)
-    return "                '{0}': obj.{1},\n".format(member.name, _camel_case(member.name))
-
-
-def _member_save_list(member):
-    result = "            for item in obj.{1}:\n".format(member.name, _camel_case(member.name))
-
-    child = member.data[0]
-    if child.type == ParsedObjectType.Object:
-        result += "                d['family'].append(item.to_json())\n"
-    else:
-        result += "                d['family'].append(item)\n"
-    result += "\n"
-    return result
-
-
-def _member_load(member):
-    json_container_string = "json_obj[\"{0}\"]".format(member.name)
-    if member.type == ParsedObjectType.Object:
-        return "        obj._{0} = {1}({2})\n".format(_camel_case(member.name), _capitalize(member.name), json_container_string)
-    elif member.type == ParsedObjectType.Array:
-        result = ("        obj._{0} = []\n"
-                  "        for item in {1}:\n").format(_camel_case(member.name), json_container_string)
-        child = member.data[0]
-
-        if child.type == ParsedObjectType.Object:
-            result += "            obj._{0}.append({1}.load(item))\n".format(_camel_case(member.name), _capitalize(child.name))
-        else:
-            result += "            obj._{0}.append(item)\n".format(_camel_case(member.name))
-        return result
-    else:
-        return "        obj._{0} = {1}\n".format(_camel_case(member.name), json_container_string)
 
 
 def _camel_case(obj):

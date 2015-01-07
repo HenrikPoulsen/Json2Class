@@ -17,57 +17,61 @@ public class ListSample{
         stringList = new ArrayList<String>();
         objectList = new ArrayList<ObjectList>();
     }
-    public ListSample(JSONObject jsonObject) {
-        intList = new ArrayList<Integer>();
-        for(Object item : (JSONArray)jsonObject.get("intList")) {
-            intList.add((Integer)item);
-        }
-        floatList = new ArrayList<Float>();
-        for(Object item : (JSONArray)jsonObject.get("floatList")) {
-            floatList.add((Float)item);
-        }
-        stringList = new ArrayList<String>();
-        for(Object item : (JSONArray)jsonObject.get("stringList")) {
-            stringList.add((String)item);
-        }
-        objectList = new ArrayList<ObjectList>();
-        for(Object item : (JSONArray)jsonObject.get("objectList")) {
-            objectList.add(new ObjectList((JSONObject)item));
-        }
-    }
-
     public List<Integer> intList;
     public List<Float> floatList;
     public List<String> stringList;
     public List<ObjectList> objectList;
 
-    public JSONObject toJson() {
-        JSONObject json = new JSONObject();
-        JSONArray tempArray;
+    public static class JsonSimpleFactory
+    {
+        public static JSONObject toJson(ListSample obj) {
+            JSONObject json = new JSONObject();
+            JSONArray tempArray;
 
-        tempArray = new JSONArray();
-        for(Integer item : intList){
-            tempArray.add(item);
-        }
-        json.put("intList", tempArray);
+            tempArray = new JSONArray();
+            for(Integer item : obj.intList){
+                tempArray.add(item);
+            }
+            json.put("intList", tempArray);
 
-        tempArray = new JSONArray();
-        for(Float item : floatList){
-            tempArray.add(item);
-        }
-        json.put("floatList", tempArray);
+            tempArray = new JSONArray();
+            for(Float item : obj.floatList){
+                tempArray.add(item);
+            }
+            json.put("floatList", tempArray);
 
-        tempArray = new JSONArray();
-        for(String item : stringList){
-            tempArray.add(item);
-        }
-        json.put("stringList", tempArray);
+            tempArray = new JSONArray();
+            for(String item : obj.stringList){
+                tempArray.add(item);
+            }
+            json.put("stringList", tempArray);
 
-        tempArray = new JSONArray();
-        for(ObjectList item : objectList){
-            tempArray.add(item.toJson());
+            tempArray = new JSONArray();
+            for(ObjectList item : obj.objectList){
+                tempArray.add(ObjectList.JsonSimpleFactory.toJson(item));
+            }
+            json.put("objectList", tempArray);
+            return json;
         }
-        json.put("objectList", tempArray);
-        return json;
+        public static ListSample fromJson(JSONObject jsonObject) {
+            ListSample obj = new ListSample();
+            obj.intList = new ArrayList<Integer>();
+            for(Object item : (JSONArray)jsonObject.get("intList")) {
+                obj.intList.add((Integer)item);
+            }
+            obj.floatList = new ArrayList<Float>();
+            for(Object item : (JSONArray)jsonObject.get("floatList")) {
+                obj.floatList.add((Float)item);
+            }
+            obj.stringList = new ArrayList<String>();
+            for(Object item : (JSONArray)jsonObject.get("stringList")) {
+                obj.stringList.add((String)item);
+            }
+            obj.objectList = new ArrayList<ObjectList>();
+            for(Object item : (JSONArray)jsonObject.get("objectList")) {
+                obj.objectList.add(ObjectList.JsonSimpleFactory.fromJson((JSONObject)item));
+            }
+            return obj;
+        }
     }
 }

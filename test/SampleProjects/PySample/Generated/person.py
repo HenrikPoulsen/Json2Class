@@ -13,19 +13,6 @@ class Person:
         self._country = ""
         self._family = []
 
-    @classmethod
-    def load(cls, json_obj):
-        """:type json_obj: dict
-           :rtype: Person"""
-        obj = Person()
-        obj._name = json_obj["name"]
-        obj._age = json_obj["age"]
-        obj._country = json_obj["country"]
-        obj._family = []
-        for item in json_obj["family"]:
-            obj._family.append(Person.load(item))
-        return obj
-
     @property
     def name(self):
         """:rtype: str"""
@@ -67,19 +54,36 @@ class Person:
         self._family = value
 
 
-    def to_json(self):
-        """:rtype: str"""
-        return Person.JsonEncoder().encode(self)
 
-    class JsonEncoder(json.JSONEncoder):
-        def default(self, obj):
-            d = {
-                'name': obj.name,
-                'age': obj.age,
-                'country': obj.country,
-                'family': [],
-            }
-            for item in obj.family:
-                d['family'].append(item.to_json())
+    class JsonFactory():
+        @staticmethod
+        def to_json(self):
+            """:rtype: dict"""
+            return Person.JsonEncoder().encode(self)
 
-            return d
+        class JsonEncoder(json.JSONEncoder):
+            def default(self, obj):
+                d = {
+                    'name': obj.name,
+                    'age': obj.age,
+                    'country': obj.country,
+                    'family': [],
+                }
+                for item in obj.family:
+                    d['family'].append(item.to_json())
+
+                return d
+
+        @staticmethod
+        def from_json(cls, json_obj):
+            """:type json_obj: dict
+               :rtype: Person"""
+            obj = Person()
+            obj._name = json_obj["name"]
+            obj._age = json_obj["age"]
+            obj._country = json_obj["country"]
+            obj._family = []
+            for item in json_obj["family"]:
+                obj._family.append(Person.load(item))
+            return obj
+

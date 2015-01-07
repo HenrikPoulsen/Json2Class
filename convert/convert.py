@@ -4,7 +4,6 @@ import json
 import importlib
 from collections import OrderedDict
 from base.parsedobject import ParsedObject, ParsedObjectType
-from base.enginegenerator import BaseEngineGenerator
 
 
 def run(namespace, targets, json_path):

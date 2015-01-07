@@ -10,15 +10,19 @@ import org.json.simple.JSONObject;
 public class GlossList{
     public GlossList() {
     }
-    public GlossList(JSONObject jsonObject) {
-        glossEntry = new GlossEntry((JSONObject)jsonObject.get("glossEntry"));
-    }
-
     public GlossEntry glossEntry;
 
-    public JSONObject toJson() {
-        JSONObject json = new JSONObject();
-        json.put("glossEntry", glossEntry.toJson());
-        return json;
+    public static class JsonSimpleFactory
+    {
+        public static JSONObject toJson(GlossList obj) {
+            JSONObject json = new JSONObject();
+            json.put("glossEntry", GlossEntry.JsonSimpleFactory.toJson(obj.glossEntry));
+            return json;
+        }
+        public static GlossList fromJson(JSONObject jsonObject) {
+            GlossList obj = new GlossList();
+            obj.glossEntry = GlossEntry.JsonSimpleFactory.fromJson((JSONObject)jsonObject.get("glossEntry"));
+            return obj;
+        }
     }
 }

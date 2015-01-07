@@ -11,18 +11,22 @@ public class Glossary{
     public Glossary() {
         title = "";
     }
-    public Glossary(JSONObject jsonObject) {
-        title = (String)jsonObject.get("title");
-        glossDiv = new GlossDiv((JSONObject)jsonObject.get("glossDiv"));
-    }
-
     public String title;
     public GlossDiv glossDiv;
 
-    public JSONObject toJson() {
-        JSONObject json = new JSONObject();
-        json.put("title", title);
-        json.put("glossDiv", glossDiv.toJson());
-        return json;
+    public static class JsonSimpleFactory
+    {
+        public static JSONObject toJson(Glossary obj) {
+            JSONObject json = new JSONObject();
+            json.put("title", obj.title);
+            json.put("glossDiv", GlossDiv.JsonSimpleFactory.toJson(obj.glossDiv));
+            return json;
+        }
+        public static Glossary fromJson(JSONObject jsonObject) {
+            Glossary obj = new Glossary();
+            obj.title = (String)jsonObject.get("title");
+            obj.glossDiv = GlossDiv.JsonSimpleFactory.fromJson((JSONObject)jsonObject.get("glossDiv"));
+            return obj;
+        }
     }
 }

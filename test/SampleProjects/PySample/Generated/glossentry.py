@@ -18,21 +18,6 @@ class GlossEntry:
         self._gloss_def = None
         self._gloss_see = ""
 
-    @classmethod
-    def load(cls, json_obj):
-        """:type json_obj: dict
-           :rtype: GlossEntry"""
-        obj = GlossEntry()
-        obj._id = json_obj["id"]
-        obj._test_float = json_obj["testFloat"]
-        obj._sort_as = json_obj["sortAs"]
-        obj._gloss_term = json_obj["glossTerm"]
-        obj._acronym = json_obj["acronym"]
-        obj._abbrev = json_obj["abbrev"]
-        obj._gloss_def = GlossDef(json_obj["glossDef"])
-        obj._gloss_see = json_obj["glossSee"]
-        return obj
-
     @property
     def id(self):
         """:rtype: int"""
@@ -114,20 +99,39 @@ class GlossEntry:
         self._gloss_see = value
 
 
-    def to_json(self):
-        """:rtype: str"""
-        return GlossEntry.JsonEncoder().encode(self)
 
-    class JsonEncoder(json.JSONEncoder):
-        def default(self, obj):
-            d = {
-                'id': obj.id,
-                'testFloat': obj.test_float,
-                'sortAs': obj.sort_as,
-                'glossTerm': obj.gloss_term,
-                'acronym': obj.acronym,
-                'abbrev': obj.abbrev,
-            'glossDef': obj.gloss_def.to_json(),
-                'glossSee': obj.gloss_see,
-            }
-            return d
+    class JsonFactory():
+        @staticmethod
+        def to_json(self):
+            """:rtype: dict"""
+            return GlossEntry.JsonEncoder().encode(self)
+
+        class JsonEncoder(json.JSONEncoder):
+            def default(self, obj):
+                d = {
+                    'id': obj.id,
+                    'testFloat': obj.test_float,
+                    'sortAs': obj.sort_as,
+                    'glossTerm': obj.gloss_term,
+                    'acronym': obj.acronym,
+                    'abbrev': obj.abbrev,
+                    'glossDef': obj.gloss_def.to_json(),
+                    'glossSee': obj.gloss_see,
+                }
+                return d
+
+        @staticmethod
+        def from_json(cls, json_obj):
+            """:type json_obj: dict
+               :rtype: GlossEntry"""
+            obj = GlossEntry()
+            obj._id = json_obj["id"]
+            obj._test_float = json_obj["testFloat"]
+            obj._sort_as = json_obj["sortAs"]
+            obj._gloss_term = json_obj["glossTerm"]
+            obj._acronym = json_obj["acronym"]
+            obj._abbrev = json_obj["abbrev"]
+            obj._gloss_def = GlossDef(json_obj["glossDef"])
+            obj._gloss_see = json_obj["glossSee"]
+            return obj
+

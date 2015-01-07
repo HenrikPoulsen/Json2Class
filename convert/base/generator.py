@@ -1,5 +1,6 @@
 from factorygenerator import BaseFactoryGenerator
 
+
 class BaseGenerator():
     """
     This is the generator base class which is basically just a set of methods that should be implemented for the
@@ -24,11 +25,14 @@ class BaseGenerator():
         """
         self.data = data
         self.namespace = namespace
+
+        for factory in self.factories:
+            factory.init(self.data, self.namespace)
+
         result = "".join(
         [
             self._generate_header(),
             self._generate_default_constructor(),
-            self._generate_json_constructor(),
             self._generate_member_access(),
             self._generate_factory(),
             self._generate_footer()

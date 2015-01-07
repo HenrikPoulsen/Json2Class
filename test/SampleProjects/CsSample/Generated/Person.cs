@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.IO;
 using SimpleJSON;
 using Newtonsoft.Json;
 
@@ -68,98 +66,6 @@ namespace Generated
 
         public static class NewtonsoftFactory
         {
-            public static Person FromJson(string json)
-            {
-                var reader = new JsonTextReader(new StringReader(json));
-                return FromJson(reader);
-            }
-
-            public static Person FromJson(JsonTextReader reader)
-            {
-                var currentProperty = string.Empty;
-
-                var tempName = "";
-                var tempCountry = "";
-                var tempAge = 0;
-                List<Person> tempFamily = null;
-                var done = false;
-
-                while (reader.Read() && !done)
-                {
-                    if (reader.Value != null)
-                    {
-                        switch (reader.TokenType)
-                        {
-                            case JsonToken.PropertyName:
-                                {
-                                    currentProperty = reader.Value.ToString();
-                                    break;
-                                }
-
-                            case JsonToken.String:
-                                {
-                                    switch (currentProperty)
-                                    {
-                                        case "name":
-                                            {
-                                                tempName = reader.Value.ToString();
-                                                break;
-                                            }
-                                        case "country":
-                                            {
-                                                tempCountry = reader.Value.ToString();
-                                                break;
-                                            }
-                                    }
-                                    break;
-                                }
-
-                            case JsonToken.Integer:
-                                {
-                                    switch (currentProperty)
-                                    {
-                                        case "age":
-                                            {
-                                                tempAge = Int32.Parse(reader.Value.ToString());
-                                                break;
-                                            }
-                                    }
-                                    break;
-                                }
-                        }
-                    }
-                    else
-                    {
-                        switch (reader.TokenType)
-                        {
-                            case JsonToken.StartArray:
-                                {
-                                    break;
-                                }
-
-                            case JsonToken.EndArray:
-                                {
-                                    done = true;
-                                    break;
-                                }
-                            case JsonToken.EndObject:
-                                {
-                                    done = true;
-                                    break;
-                                }
-                        }
-                    }
-
-                }
-
-                return new Person
-                {
-                    Name = tempName,
-                    Country = tempCountry,
-                    Age = tempAge,
-                    Family = tempFamily
-                };
-            }
         }
     }
 }

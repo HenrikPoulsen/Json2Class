@@ -11,17 +11,6 @@ class GlossDef:
         self._para = ""
         self._gloss_see_also = []
 
-    @classmethod
-    def load(cls, json_obj):
-        """:type json_obj: dict
-           :rtype: GlossDef"""
-        obj = GlossDef()
-        obj._para = json_obj["para"]
-        obj._gloss_see_also = []
-        for item in json_obj["glossSeeAlso"]:
-            obj._gloss_see_also.append(item)
-        return obj
-
     @property
     def para(self):
         """:rtype: str"""
@@ -43,17 +32,32 @@ class GlossDef:
         self._gloss_see_also = value
 
 
-    def to_json(self):
-        """:rtype: str"""
-        return GlossDef.JsonEncoder().encode(self)
 
-    class JsonEncoder(json.JSONEncoder):
-        def default(self, obj):
-            d = {
-                'para': obj.para,
-                'glossSeeAlso': [],
-            }
-            for item in obj.gloss_see_also:
-                d['family'].append(item)
+    class JsonFactory():
+        @staticmethod
+        def to_json(self):
+            """:rtype: dict"""
+            return GlossDef.JsonEncoder().encode(self)
 
-            return d
+        class JsonEncoder(json.JSONEncoder):
+            def default(self, obj):
+                d = {
+                    'para': obj.para,
+                    'glossSeeAlso': [],
+                }
+                for item in obj.gloss_see_also:
+                    d['family'].append(item)
+
+                return d
+
+        @staticmethod
+        def from_json(cls, json_obj):
+            """:type json_obj: dict
+               :rtype: GlossDef"""
+            obj = GlossDef()
+            obj._para = json_obj["para"]
+            obj._gloss_see_also = []
+            for item in json_obj["glossSeeAlso"]:
+                obj._gloss_see_also.append(item)
+            return obj
+

@@ -10,14 +10,6 @@ class ObjectList:
     def __init__(self):
         self._name = ""
 
-    @classmethod
-    def load(cls, json_obj):
-        """:type json_obj: dict
-           :rtype: ObjectList"""
-        obj = ObjectList()
-        obj._name = json_obj["name"]
-        return obj
-
     @property
     def name(self):
         """:rtype: str"""
@@ -29,13 +21,25 @@ class ObjectList:
         self._name = value
 
 
-    def to_json(self):
-        """:rtype: str"""
-        return ObjectList.JsonEncoder().encode(self)
 
-    class JsonEncoder(json.JSONEncoder):
-        def default(self, obj):
-            d = {
-                'name': obj.name,
-            }
-            return d
+    class JsonFactory():
+        @staticmethod
+        def to_json(self):
+            """:rtype: dict"""
+            return ObjectList.JsonEncoder().encode(self)
+
+        class JsonEncoder(json.JSONEncoder):
+            def default(self, obj):
+                d = {
+                    'name': obj.name,
+                }
+                return d
+
+        @staticmethod
+        def from_json(cls, json_obj):
+            """:type json_obj: dict
+               :rtype: ObjectList"""
+            obj = ObjectList()
+            obj._name = json_obj["name"]
+            return obj
+

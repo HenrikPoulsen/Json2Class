@@ -14,25 +14,6 @@ class ListSample:
         self._string_list = []
         self._object_list = []
 
-    @classmethod
-    def load(cls, json_obj):
-        """:type json_obj: dict
-           :rtype: ListSample"""
-        obj = ListSample()
-        obj._int_list = []
-        for item in json_obj["intList"]:
-            obj._int_list.append(item)
-        obj._float_list = []
-        for item in json_obj["floatList"]:
-            obj._float_list.append(item)
-        obj._string_list = []
-        for item in json_obj["stringList"]:
-            obj._string_list.append(item)
-        obj._object_list = []
-        for item in json_obj["objectList"]:
-            obj._object_list.append(ObjectList.load(item))
-        return obj
-
     @property
     def int_list(self):
         """:rtype: list of [int]"""
@@ -74,28 +55,51 @@ class ListSample:
         self._object_list = value
 
 
-    def to_json(self):
-        """:rtype: str"""
-        return ListSample.JsonEncoder().encode(self)
 
-    class JsonEncoder(json.JSONEncoder):
-        def default(self, obj):
-            d = {
-                'intList': [],
-                'floatList': [],
-                'stringList': [],
-                'objectList': [],
-            }
-            for item in obj.int_list:
-                d['family'].append(item)
+    class JsonFactory():
+        @staticmethod
+        def to_json(self):
+            """:rtype: dict"""
+            return ListSample.JsonEncoder().encode(self)
 
-            for item in obj.float_list:
-                d['family'].append(item)
+        class JsonEncoder(json.JSONEncoder):
+            def default(self, obj):
+                d = {
+                    'intList': [],
+                    'floatList': [],
+                    'stringList': [],
+                    'objectList': [],
+                }
+                for item in obj.int_list:
+                    d['family'].append(item)
 
-            for item in obj.string_list:
-                d['family'].append(item)
+                for item in obj.float_list:
+                    d['family'].append(item)
 
-            for item in obj.object_list:
-                d['family'].append(item.to_json())
+                for item in obj.string_list:
+                    d['family'].append(item)
 
-            return d
+                for item in obj.object_list:
+                    d['family'].append(item.to_json())
+
+                return d
+
+        @staticmethod
+        def from_json(cls, json_obj):
+            """:type json_obj: dict
+               :rtype: ListSample"""
+            obj = ListSample()
+            obj._int_list = []
+            for item in json_obj["intList"]:
+                obj._int_list.append(item)
+            obj._float_list = []
+            for item in json_obj["floatList"]:
+                obj._float_list.append(item)
+            obj._string_list = []
+            for item in json_obj["stringList"]:
+                obj._string_list.append(item)
+            obj._object_list = []
+            for item in json_obj["objectList"]:
+                obj._object_list.append(ObjectList.load(item))
+            return obj
+
