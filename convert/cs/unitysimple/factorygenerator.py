@@ -136,15 +136,18 @@ def _serialize_object_member(member, namespace):
 
 
 def _serialize_array_member(member, namespace):
-    serializer = "                var {0} = new JSONArray();\n".format(member.name)
-    serializer += "                foreach(var item in obj.{0})\n".format(_capitalize(member.name))
-    serializer += "                {\n"
+    serializer = ("                if(obj.{1} != null)\n"
+                  "                {{\n"
+                  "                    var {0} = new JSONArray();\n").format(member.name, _capitalize(member.name))
+    serializer += "                    foreach(var item in obj.{0})\n".format(_capitalize(member.name))
+    serializer += "                    {\n"
     if member.data[0].type == ParsedObjectType.Object:
-        serializer += "                    {0}.Add({1}.{2}.SimpleJsonFactory.ToJson(item));\n".format(member.name, namespace, _capitalize(member.data[0].name))
+        serializer += "                        {0}.Add({1}.{2}.SimpleJsonFactory.ToJson(item));\n".format(member.name, namespace, _capitalize(member.data[0].name))
     else:
-        serializer += "                    {0}.Add(new JSONData(item));\n".format(member.name)
+        serializer += "                        {0}.Add(new JSONData(item));\n".format(member.name)
+    serializer += "                    }\n"
+    serializer += "                    json[\"{0}\"] = {0};\n".format(member.name)
     serializer += "                }\n"
-    serializer += "                json[\"{0}\"] = {0};\n\n".format(member.name)
     return serializer
 
 def _capitalize(obj):

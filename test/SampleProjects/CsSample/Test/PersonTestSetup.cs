@@ -62,6 +62,20 @@ namespace Test
             }
         }
 
+        public static class LoadedTestPersonHasNullFamily
+        {
+            public static Person Person()
+            {
+                return new Person
+                {
+                    Name = "Empty",
+                    Age = 10,
+                    Country = "Whatever",
+                    Family = new List<Person>()
+                };
+            }
+        }
+
         public static class LoadedTestPersonWithMissingValues
         {
             public static Person Person()

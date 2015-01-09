@@ -27,13 +27,15 @@ namespace Generated
             {
                 var json = new JSONClass();
                 json["para"] = new JSONData(obj.Para);
-                var glossSeeAlso = new JSONArray();
-                foreach(var item in obj.GlossSeeAlso)
+                if(obj.GlossSeeAlso != null)
                 {
-                    glossSeeAlso.Add(new JSONData(item));
+                    var glossSeeAlso = new JSONArray();
+                    foreach(var item in obj.GlossSeeAlso)
+                    {
+                        glossSeeAlso.Add(new JSONData(item));
+                    }
+                    json["glossSeeAlso"] = glossSeeAlso;
                 }
-                json["glossSeeAlso"] = glossSeeAlso;
-
                 return json;
             }
 

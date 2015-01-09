@@ -25,11 +25,13 @@ public class GlossDef{
             JSONArray tempArray;
             json.put("para", obj.para);
 
-            tempArray = new JSONArray();
-            for(String item : obj.glossSeeAlso){
-                tempArray.add(item);
+            if(obj.glossSeeAlso != null) {
+                tempArray = new JSONArray();
+                for(String item : obj.glossSeeAlso){
+                    tempArray.add(item);
+                }
+                json.put("glossSeeAlso", tempArray);
             }
-            json.put("glossSeeAlso", tempArray);
             return json;
         }
         public static GlossDef fromJson(JSONObject jsonObject) {

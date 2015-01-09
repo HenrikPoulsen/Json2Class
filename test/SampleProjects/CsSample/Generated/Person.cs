@@ -32,13 +32,15 @@ namespace Generated
                 json["name"] = new JSONData(obj.Name);
                 json["age"] = new JSONData(obj.Age);
                 json["country"] = new JSONData(obj.Country);
-                var family = new JSONArray();
-                foreach(var item in obj.Family)
+                if(obj.Family != null)
                 {
-                    family.Add(Generated.Person.SimpleJsonFactory.ToJson(item));
+                    var family = new JSONArray();
+                    foreach(var item in obj.Family)
+                    {
+                        family.Add(Generated.Person.SimpleJsonFactory.ToJson(item));
+                    }
+                    json["family"] = family;
                 }
-                json["family"] = family;
-
                 return json;
             }
 

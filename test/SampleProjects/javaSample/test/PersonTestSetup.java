@@ -53,6 +53,20 @@ class PersonTestSetup
         }
     }
 
+    public static class LoadedTestPersonHasNullFamily
+    {
+        public static Person Person()
+        {
+            Person temp = new Person();
+            temp.name = "Empty";
+            temp.age = 10;
+            temp.country = "Whatever";
+            temp.family = new ArrayList<Person>();
+            return temp;
+        }
+    }
+
+
     public static class LoadedTestPersonWithMissingValues
     {
         public static Person Person()

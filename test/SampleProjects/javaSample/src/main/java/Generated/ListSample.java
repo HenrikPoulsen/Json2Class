@@ -28,29 +28,37 @@ public class ListSample{
             JSONObject json = new JSONObject();
             JSONArray tempArray;
 
-            tempArray = new JSONArray();
-            for(Integer item : obj.intList){
-                tempArray.add(item);
+            if(obj.intList != null) {
+                tempArray = new JSONArray();
+                for(Integer item : obj.intList){
+                    tempArray.add(item);
+                }
+                json.put("intList", tempArray);
             }
-            json.put("intList", tempArray);
 
-            tempArray = new JSONArray();
-            for(Float item : obj.floatList){
-                tempArray.add(item);
+            if(obj.floatList != null) {
+                tempArray = new JSONArray();
+                for(Float item : obj.floatList){
+                    tempArray.add(item);
+                }
+                json.put("floatList", tempArray);
             }
-            json.put("floatList", tempArray);
 
-            tempArray = new JSONArray();
-            for(String item : obj.stringList){
-                tempArray.add(item);
+            if(obj.stringList != null) {
+                tempArray = new JSONArray();
+                for(String item : obj.stringList){
+                    tempArray.add(item);
+                }
+                json.put("stringList", tempArray);
             }
-            json.put("stringList", tempArray);
 
-            tempArray = new JSONArray();
-            for(ObjectList item : obj.objectList){
-                tempArray.add(ObjectList.JsonSimpleFactory.toJson(item));
+            if(obj.objectList != null) {
+                tempArray = new JSONArray();
+                for(ObjectList item : obj.objectList){
+                    tempArray.add(ObjectList.JsonSimpleFactory.toJson(item));
+                }
+                json.put("objectList", tempArray);
             }
-            json.put("objectList", tempArray);
             return json;
         }
         public static ListSample fromJson(JSONObject jsonObject) {

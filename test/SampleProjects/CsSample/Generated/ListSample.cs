@@ -30,34 +30,42 @@ namespace Generated
             public static JSONNode ToJson(ListSample obj)
             {
                 var json = new JSONClass();
-                var intList = new JSONArray();
-                foreach(var item in obj.IntList)
+                if(obj.IntList != null)
                 {
-                    intList.Add(new JSONData(item));
+                    var intList = new JSONArray();
+                    foreach(var item in obj.IntList)
+                    {
+                        intList.Add(new JSONData(item));
+                    }
+                    json["intList"] = intList;
                 }
-                json["intList"] = intList;
-
-                var floatList = new JSONArray();
-                foreach(var item in obj.FloatList)
+                if(obj.FloatList != null)
                 {
-                    floatList.Add(new JSONData(item));
+                    var floatList = new JSONArray();
+                    foreach(var item in obj.FloatList)
+                    {
+                        floatList.Add(new JSONData(item));
+                    }
+                    json["floatList"] = floatList;
                 }
-                json["floatList"] = floatList;
-
-                var stringList = new JSONArray();
-                foreach(var item in obj.StringList)
+                if(obj.StringList != null)
                 {
-                    stringList.Add(new JSONData(item));
+                    var stringList = new JSONArray();
+                    foreach(var item in obj.StringList)
+                    {
+                        stringList.Add(new JSONData(item));
+                    }
+                    json["stringList"] = stringList;
                 }
-                json["stringList"] = stringList;
-
-                var objectList = new JSONArray();
-                foreach(var item in obj.ObjectList)
+                if(obj.ObjectList != null)
                 {
-                    objectList.Add(Generated.ObjectList.SimpleJsonFactory.ToJson(item));
+                    var objectList = new JSONArray();
+                    foreach(var item in obj.ObjectList)
+                    {
+                        objectList.Add(Generated.ObjectList.SimpleJsonFactory.ToJson(item));
+                    }
+                    json["objectList"] = objectList;
                 }
-                json["objectList"] = objectList;
-
                 return json;
             }
 

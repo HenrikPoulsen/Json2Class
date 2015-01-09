@@ -82,6 +82,22 @@ namespace Test
                 .ToExpectedObject()
                 .ShouldMatch(loadedGlossary);
         }
+
+        [TestMethod]
+        public void LoadedTestPersonHasNullFamily()
+        {
+            var person = PersonTestSetup.LoadedTestPersonHasNullFamily.Person();
+            person.Family = null;
+            var json = Person.SimpleJsonFactory.ToJson(person);
+
+            // Act
+            var loadedPerson = Person.SimpleJsonFactory.FromJson(json);
+
+            // Assert
+            PersonTestSetup.LoadedTestPersonHasNullFamily.Person()
+                .ToExpectedObject()
+                .ShouldMatch(loadedPerson);
+        }
         #endregion
 
         #region Glossary Tests

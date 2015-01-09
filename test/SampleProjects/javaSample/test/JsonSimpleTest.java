@@ -72,6 +72,19 @@ public class JsonSimpleTest extends TestCase {
         assertReflectionEquals(PersonTestSetup.LoadedTestPersonWithMissingValues.Person(), loadedPerson);
     }
 
+    public void testLoadedPersonHasNullFamily()
+    {
+        Person person = PersonTestSetup.LoadedTestPersonHasNullFamily.Person();
+        person.family = null;
+        JSONObject json = Person.JsonSimpleFactory.toJson(person);
+
+        // Act
+        Person loadedGlossary = Person.JsonSimpleFactory.fromJson(json);
+
+        // Assert
+        assertReflectionEquals(PersonTestSetup.LoadedTestPersonHasNullFamily.Person(), loadedGlossary);
+    }
+
     public void testLoadedGlossaryHasExpectedEmptyValues()
     {
         JSONObject json = Glossary.JsonSimpleFactory.toJson(GlossaryTestSetup.LoadedTestGlossaryHasExpectedEmptyValues.Glossary());

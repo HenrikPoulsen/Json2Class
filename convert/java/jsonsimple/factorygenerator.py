@@ -139,12 +139,14 @@ def _serialize_object_member(member):
 
 
 def _serialize_array_member(member):
-    serializer = ("\n            tempArray = new JSONArray();\n"
-                  "            for({1} item : obj.{0}){{\n").format(member.name, _get_type_name(member.data[0], False))
+    serializer = ("\n            if(obj.{0} != null) {{\n"
+                  "                tempArray = new JSONArray();\n"
+                  "                for({1} item : obj.{0}){{\n").format(member.name, _get_type_name(member.data[0], False))
     if member.data[0].type == ParsedObjectType.Object:
-        serializer += "                tempArray.add({0}.JsonSimpleFactory.toJson(item));\n".format(_capitalize(member.data[0].name))
+        serializer += "                    tempArray.add({0}.JsonSimpleFactory.toJson(item));\n".format(_capitalize(member.data[0].name))
     else:
-        serializer += "                tempArray.add(item);\n"
+        serializer += "                    tempArray.add(item);\n"
+    serializer += "                }\n"
+    serializer += "                json.put(\"{0}\", tempArray);\n".format(member.name)
     serializer += "            }\n"
-    serializer += "            json.put(\"{0}\", tempArray);\n".format(member.name)
     return serializer

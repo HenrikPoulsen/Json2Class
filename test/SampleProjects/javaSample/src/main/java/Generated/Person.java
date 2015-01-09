@@ -30,11 +30,13 @@ public class Person{
             json.put("age", obj.age);
             json.put("country", obj.country);
 
-            tempArray = new JSONArray();
-            for(Person item : obj.family){
-                tempArray.add(Person.JsonSimpleFactory.toJson(item));
+            if(obj.family != null) {
+                tempArray = new JSONArray();
+                for(Person item : obj.family){
+                    tempArray.add(Person.JsonSimpleFactory.toJson(item));
+                }
+                json.put("family", tempArray);
             }
-            json.put("family", tempArray);
             return json;
         }
         public static Person fromJson(JSONObject jsonObject) {
