@@ -8,7 +8,7 @@ public class Main {
 
     public static void main(String[] args) {
 	// write your code here
-        JSONObject obj = new JSONObject();
+        /*JSONObject obj = new JSONObject();
         obj.put("name", "Hello");
         ObjectList l = new ObjectList(obj);
         System.out.println(l.name);
@@ -21,6 +21,6 @@ public class Main {
         obj.put("glossSeeAlso", arr);
 
         GlossDef glossDef = new GlossDef(obj);
-        System.out.println(glossDef.para);
+        System.out.println(glossDef.para);*/
     }
 }

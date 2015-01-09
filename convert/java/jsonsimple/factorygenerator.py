@@ -15,6 +15,9 @@ class FactoryGenerator(BaseFactoryGenerator):
 
     def _generate_from_json(self):
         constructor = ("        public static {0} fromJson(JSONObject jsonObject) {{\n"
+                       "            if(jsonObject == null) {{\n"
+                       "                return null;\n"
+                       "            }}\n"
                        "            {0} obj = new {0}();\n").format(_capitalize(self.data.name))
 
         # member initialization
@@ -81,20 +84,24 @@ def _member_initialization(member):
     json_container_string = "jsonObject.get(\"{0}\")".format(member.name)
 
     if member.type == ParsedObjectType.Object:
-        return "            obj.{0} = {1};\n".format(member.name, _get_member_initialization_string(member, json_container_string))
+        return "            obj.{0} = !jsonObject.containsKey(\"{0}\") ? null : {1};\n".format(member.name, _get_member_initialization_string(member, json_container_string))
     elif member.type == ParsedObjectType.Array:
-        result = ("            obj.{0} = new ArrayList<{1}>();\n"
-                  "            for(Object item : (JSONArray)jsonObject.get(\"{2}\")) {{\n").format(member.name, _get_type_name(member.data[0], False), member.name)
+        result = ("            if(jsonObject.containsKey(\"{0}\")) {{\n"
+                  "                obj.{0} = new ArrayList<{1}>();\n"
+                  "                for(Object item : (JSONArray)jsonObject.get(\"{2}\")) {{\n").format(member.name, _get_type_name(member.data[0], False), member.name)
         child = member.data[0]
 
         if child.type == ParsedObjectType.Object:
-            result += "                obj.{0}.add({1}.JsonSimpleFactory.fromJson((JSONObject)item));\n".format(member.name, _capitalize(child.name))
+            result += "                    obj.{0}.add({1}.JsonSimpleFactory.fromJson((JSONObject)item));\n".format(member.name, _capitalize(child.name))
         else:
-            result += "                obj.{0}.add(({1})item);\n".format(member.name, _get_type_name(child, False))
-        result += "            }\n"
+            result += "                    obj.{0}.add(({1})item);\n".format(member.name, _get_type_name(child, False))
+        result += ("                }\n"
+                   "            }\n")
         return result
     else:
-        return "            obj.{0} = ({2}){1};\n".format(member.name, _get_member_initialization_string(member, json_container_string), _get_type_name(member, False))
+        return ("            if(jsonObject.containsKey(\"{0}\")) {{\n"
+                "                obj.{0} = ({2}){1};\n"
+                "            }}\n").format(member.name, _get_member_initialization_string(member, json_container_string), _get_type_name(member, False))
 
 
 def _get_member_initialization_string(member, json_container):
@@ -128,7 +135,7 @@ def _get_type_name(member, primitive=True):
 
 
 def _serialize_object_member(member):
-    return "            json.put(\"{0}\", {1}.JsonSimpleFactory.toJson(obj.{0}));\n".format(member.name, _capitalize(member.name))
+    return "            json.put(\"{0}\", obj.{0} == null ? null : {1}.JsonSimpleFactory.toJson(obj.{0}));\n".format(member.name, _capitalize(member.name))
 
 
 def _serialize_array_member(member):
