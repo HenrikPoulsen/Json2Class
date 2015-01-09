@@ -37,7 +37,7 @@ You need to have Python 2.7.x and install [enum34](https://pypi.python.org/pypi/
 ### Results in
 #### [cs/Generated/Person.cs](test/SampleProjects/CsSample/Generated/Person.cs)
 #### [py/Generated/person.py](test/SampleProjects/PySample/Generated/person.py)
-#### [java/Generated/Person.java](test/SampleProjects/javaSample/src/Generated/Person.java)
+#### [java/Generated/Person.java](test/SampleProjects/javaSample/src/main/java/Generated/Person.java)
 
 
 ## Info
