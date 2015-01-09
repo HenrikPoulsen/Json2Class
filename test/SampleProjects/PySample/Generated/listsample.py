@@ -60,7 +60,7 @@ class ListSample:
         @staticmethod
         def to_json(self):
             """:rtype: dict"""
-            return ListSample.JsonEncoder().encode(self)
+            return ListSample.JsonFactory.JsonEncoder().encode(self)
 
         class JsonEncoder(json.JSONEncoder):
             def default(self, obj):
@@ -80,12 +80,12 @@ class ListSample:
                     d['family'].append(item)
 
                 for item in obj.object_list:
-                    d['family'].append(item.to_json())
+                    d['family'].append(ObjectList.JsonFactory.to_json(item))
 
                 return d
 
         @staticmethod
-        def from_json(cls, json_obj):
+        def from_json(json_obj):
             """:type json_obj: dict
                :rtype: ListSample"""
             obj = ListSample()
@@ -100,6 +100,6 @@ class ListSample:
                 obj._string_list.append(item)
             obj._object_list = []
             for item in json_obj["objectList"]:
-                obj._object_list.append(ObjectList.load(item))
+                obj._object_list.append(ObjectList.JsonFactory.from_json(item))
             return obj
 

@@ -104,7 +104,7 @@ class GlossEntry:
         @staticmethod
         def to_json(self):
             """:rtype: dict"""
-            return GlossEntry.JsonEncoder().encode(self)
+            return GlossEntry.JsonFactory.JsonEncoder().encode(self)
 
         class JsonEncoder(json.JSONEncoder):
             def default(self, obj):
@@ -121,7 +121,7 @@ class GlossEntry:
                 return d
 
         @staticmethod
-        def from_json(cls, json_obj):
+        def from_json(json_obj):
             """:type json_obj: dict
                :rtype: GlossEntry"""
             obj = GlossEntry()

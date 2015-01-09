@@ -59,7 +59,7 @@ class Person:
         @staticmethod
         def to_json(self):
             """:rtype: dict"""
-            return Person.JsonEncoder().encode(self)
+            return Person.JsonFactory.JsonEncoder().encode(self)
 
         class JsonEncoder(json.JSONEncoder):
             def default(self, obj):
@@ -70,12 +70,12 @@ class Person:
                     'family': [],
                 }
                 for item in obj.family:
-                    d['family'].append(item.to_json())
+                    d['family'].append(Person.JsonFactory.to_json(item))
 
                 return d
 
         @staticmethod
-        def from_json(cls, json_obj):
+        def from_json(json_obj):
             """:type json_obj: dict
                :rtype: Person"""
             obj = Person()
@@ -84,6 +84,6 @@ class Person:
             obj._country = json_obj["country"]
             obj._family = []
             for item in json_obj["family"]:
-                obj._family.append(Person.load(item))
+                obj._family.append(Person.JsonFactory.from_json(item))
             return obj
 

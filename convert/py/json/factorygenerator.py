@@ -9,7 +9,7 @@ class FactoryGenerator(BaseFactoryGenerator):
 
     def _generate_from_json(self):
         constructor = ("        @staticmethod\n"
-                       "        def from_json(cls, json_obj):\n"
+                       "        def from_json(json_obj):\n"
                        "            \"\"\":type json_obj: dict\n"
                        "               :rtype: {0}\"\"\"\n"
                        "            obj = {0}()\n").format(_capitalize(self.data.name))
@@ -25,7 +25,7 @@ class FactoryGenerator(BaseFactoryGenerator):
         result = ("        @staticmethod\n"
                   "        def to_json(self):\n"
                   "            \"\"\":rtype: dict\"\"\"\n"
-                  "            return {0}.JsonEncoder().encode(self)\n\n"
+                  "            return {0}.JsonFactory.JsonEncoder().encode(self)\n\n"
                   "        class JsonEncoder(json.JSONEncoder):\n"
                   "            def default(self, obj):\n"
                   "                d = {{\n").format(_capitalize(self.data.name))
@@ -58,7 +58,7 @@ def _member_load(member):
         child = member.data[0]
 
         if child.type == ParsedObjectType.Object:
-            result += "                obj._{0}.append({1}.load(item))\n".format(_camel_case(member.name), _capitalize(child.name))
+            result += "                obj._{0}.append({1}.JsonFactory.from_json(item))\n".format(_camel_case(member.name), _capitalize(child.name))
         else:
             result += "                obj._{0}.append(item)\n".format(_camel_case(member.name))
         return result
@@ -85,7 +85,7 @@ def _member_save_list(member):
 
     child = member.data[0]
     if child.type == ParsedObjectType.Object:
-        result += "                    d['family'].append(item.to_json())\n"
+        result += "                    d['family'].append({0}.JsonFactory.to_json(item))\n".format(_capitalize(child.name))
     else:
         result += "                    d['family'].append(item)\n"
     result += "\n"

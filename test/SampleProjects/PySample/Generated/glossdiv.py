@@ -38,7 +38,7 @@ class GlossDiv:
         @staticmethod
         def to_json(self):
             """:rtype: dict"""
-            return GlossDiv.JsonEncoder().encode(self)
+            return GlossDiv.JsonFactory.JsonEncoder().encode(self)
 
         class JsonEncoder(json.JSONEncoder):
             def default(self, obj):
@@ -49,7 +49,7 @@ class GlossDiv:
                 return d
 
         @staticmethod
-        def from_json(cls, json_obj):
+        def from_json(json_obj):
             """:type json_obj: dict
                :rtype: GlossDiv"""
             obj = GlossDiv()

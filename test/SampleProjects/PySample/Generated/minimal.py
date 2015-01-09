@@ -16,7 +16,7 @@ class Minimal:
         @staticmethod
         def to_json(self):
             """:rtype: dict"""
-            return Minimal.JsonEncoder().encode(self)
+            return Minimal.JsonFactory.JsonEncoder().encode(self)
 
         class JsonEncoder(json.JSONEncoder):
             def default(self, obj):
@@ -25,7 +25,7 @@ class Minimal:
                 return d
 
         @staticmethod
-        def from_json(cls, json_obj):
+        def from_json(json_obj):
             """:type json_obj: dict
                :rtype: Minimal"""
             obj = Minimal()

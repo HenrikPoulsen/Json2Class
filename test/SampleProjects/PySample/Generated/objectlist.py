@@ -26,7 +26,7 @@ class ObjectList:
         @staticmethod
         def to_json(self):
             """:rtype: dict"""
-            return ObjectList.JsonEncoder().encode(self)
+            return ObjectList.JsonFactory.JsonEncoder().encode(self)
 
         class JsonEncoder(json.JSONEncoder):
             def default(self, obj):
@@ -36,7 +36,7 @@ class ObjectList:
                 return d
 
         @staticmethod
-        def from_json(cls, json_obj):
+        def from_json(json_obj):
             """:type json_obj: dict
                :rtype: ObjectList"""
             obj = ObjectList()
