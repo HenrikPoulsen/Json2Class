@@ -51,7 +51,7 @@ class FactoryGenerator(BaseFactoryGenerator):
 def _member_load(member):
     json_container_string = "json_obj[\"{0}\"]".format(member.name)
     if member.type == ParsedObjectType.Object:
-        return "            obj._{0} = {1}({2})\n".format(_camel_case(member.name), _capitalize(member.name), json_container_string)
+        return "            obj._{0} = {1}.JsonFactory.from_json({2})\n".format(_camel_case(member.name), _capitalize(member.name), json_container_string)
     elif member.type == ParsedObjectType.Array:
         result = ("            obj._{0} = []\n"
                   "            for item in {1}:\n").format(_camel_case(member.name), json_container_string)
@@ -69,7 +69,7 @@ def _member_load(member):
 
 def _member_save(member):
     if member.type == ParsedObjectType.Object:
-        return "                    '{0}': obj.{1}.to_json(),\n".format(member.name, _camel_case(member.name))
+        return "                    '{0}': {2}.JsonFactory.to_json(obj.{1}),\n".format(member.name, _camel_case(member.name), _capitalize(member.name))
     if member.type == ParsedObjectType.Array:
         return "                    '{0}': [],\n".format(member.name)
     return "                    '{0}': obj.{1},\n".format(member.name, _camel_case(member.name))
