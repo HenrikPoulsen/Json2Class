@@ -5,6 +5,18 @@
 3. Download Json2Class and place it wherever
 4. Run Json2Class.py with your Python 2.7.x binary
 
+## Generated code requirements
+Currently the code generated will depend on the following 3rd party libraries.
+
+### C\#
+Requires [Unity3D SimpleJSON.cs](http://wiki.unity3d.com/index.php/SimpleJSON)
+
+### Java
+Requires [json-simple](https://code.google.com/p/json-simple/)
+
+### Python
+Uses the built in json module, so you shouldn't have to do anything here hopefully
+
 ## Command line examples
 Here are some examples for generating classes in the different supported languages.
 In each case it will create one class called Person with language appropriate naming conventions like:
