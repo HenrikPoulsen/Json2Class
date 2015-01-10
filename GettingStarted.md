@@ -8,7 +8,7 @@
 ## Generated code requirements
 Currently the code generated will depend on the following 3rd party libraries.
 
-### C\#
+### CSharp
 Requires [Unity3D SimpleJSON.cs](http://wiki.unity3d.com/index.php/SimpleJSON)
 
 ### Java
