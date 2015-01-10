@@ -27,19 +27,19 @@ In each case it will create one class called Person with language appropriate na
 
 ### Basic usage
 #### Generating C# class
-    Java2Class --cs-out csProject/GeneratedClasses Person.json
+    Json2Class --cs-out csProject/GeneratedClasses Person.json
 #### Generating Java class
-    Java2Class --java-out javaProject/GeneratedClasses Person.json
+    Json2Class --java-out javaProject/GeneratedClasses Person.json
 #### Generating Python class
-    Java2Class --py-out pythonProject/GeneratedClasses Person.json
+    Json2Class --py-out pythonProject/GeneratedClasses Person.json
     
 #### Everything at once
-    Java2Class --py-out pythonProject/GeneratedClasses --cs-out csProject/GeneratedClasses --java-out javaProject/GeneratedClasses Person.json
+    Json2Class --py-out pythonProject/GeneratedClasses --cs-out csProject/GeneratedClasses --java-out javaProject/GeneratedClasses Person.json
     
 ### Custom Namespace
 Default the tool will generate classes in the Json2Class namespace. If you want to override it use --namespace
 
-<pre>Java2Class Java2Class <b>--namespace Generated</b> --py-out pythonProject/GeneratedClasses --cs-out csProject/GeneratedClasses --java-out javaProject/GeneratedClasses Person.json</pre>
+<pre>Json2Class <b>--namespace Generated</b> --py-out pythonProject/GeneratedClasses --cs-out csProject/GeneratedClasses --java-out javaProject/GeneratedClasses Person.json</pre>
 
 This will generate:
  Person.cs with 
