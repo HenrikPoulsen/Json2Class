@@ -122,10 +122,12 @@ def _get_type_name(member, primitive=True):
     """
     if member.type == ParsedObjectType.String:
         return "String"
-    if member.type == ParsedObjectType.Int or member.type == ParsedObjectType.Float:
+    if member.type == ParsedObjectType.Int or member.type == ParsedObjectType.Float or member.type == ParsedObjectType.Bool:
         if not primitive:
             if member.type == ParsedObjectType.Int:
                 return "Integer"
+            elif member.type == ParsedObjectType.Bool:
+                return "Boolean"
             else:
                 return "Float"
         return member.type.name.lower()

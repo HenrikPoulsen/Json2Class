@@ -2,12 +2,14 @@
   "name": "Incognito",
   "age": 32,
   "country": "Sweden",
+  "isHuman": true,
   "family": [{
                 "@name": "Person",
                 "@skip_generate": "",
                 "name": "Mom",
                 "age": 57,
                 "country": "Sweden",
+				"isHuman": true,
                 "family": []
             },
             {
@@ -16,6 +18,7 @@
                 "name": "Dad",
                 "age": 65,
                 "country": "Sweden",
+				"isHuman": false,
                 "family": []
             }]
 }

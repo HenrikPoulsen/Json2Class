@@ -83,7 +83,7 @@ def _get_type_name(member):
     :param obj:
     :return:
     """
-    if member.type == ParsedObjectType.String or member.type == ParsedObjectType.Int or member.type == ParsedObjectType.Float:
+    if member.type == ParsedObjectType.String or member.type == ParsedObjectType.Int or member.type == ParsedObjectType.Float or member.type == ParsedObjectType.Bool:
         return member.type.name.lower()
     elif member.type == ParsedObjectType.Array:
         return "List<{0}>".format(_get_type_name(member.data[0]))

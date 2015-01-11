@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using ExpectedObjects;
 using Generated;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json;
+using SimpleJSON;
 
 namespace Test
 {
@@ -29,10 +31,10 @@ namespace Test
         public void LoadedTestPersonHasExpectedAge()
         {
             // Assemble
-            var json = Person.SimpleJsonFactory.ToJson(PersonTestSetup.LoadedTestPersonHasExpectedAge.Person());
+            var jsonString = Person.SimpleJsonFactory.ToJson(PersonTestSetup.LoadedTestPersonHasExpectedAge.Person());
 
             // Act
-            var loadedPerson = Person.SimpleJsonFactory.FromJson(json);
+            var loadedPerson = Person.SimpleJsonFactory.FromJson(jsonString);
 
             // Assert
             PersonTestSetup.LoadedTestPersonHasExpectedAge.Person()
@@ -70,12 +72,13 @@ namespace Test
         [TestMethod]
         public void LoadedTestPersonWithMissingValues()
         {
-            var json = Person.SimpleJsonFactory.ToJson(PersonTestSetup.LoadedTestPersonWithMissingValues.Person());
-            json.Remove("age");
-            json.Remove("family");
+            var jsonString = Person.SimpleJsonFactory.ToJson(PersonTestSetup.LoadedTestPersonWithMissingValues.Person());
+            var jsonObject = JSON.Parse(jsonString);
+            jsonObject.Remove("age");
+            jsonObject.Remove("family");
 
             // Act
-            var loadedGlossary = Person.SimpleJsonFactory.FromJson(json);
+            var loadedGlossary = Person.SimpleJsonFactory.FromJson(jsonObject.ToString());
 
             // Assert
             PersonTestSetup.LoadedTestPersonWithMissingValues.Person()
@@ -118,14 +121,15 @@ namespace Test
         [TestMethod]
         public void LoadedTestGlossaryWithMissingValues()
         {
-            var json = Glossary.SimpleJsonFactory.ToJson(GlossaryTestSetup.LoadedTestGlossaryWithMissingValues.Glossary());
-            json.Remove("title");
-            json["glossDiv"].Remove("title");
-            json["glossDiv"]["glossList"]["glossEntry"].Remove("id");
-            json["glossDiv"]["glossList"]["glossEntry"].Remove("float");
+            var jsonString = Glossary.SimpleJsonFactory.ToJson(GlossaryTestSetup.LoadedTestGlossaryWithMissingValues.Glossary());
+            var jsonObject = JSON.Parse(jsonString);
+            jsonObject.Remove("title");
+            jsonObject["glossDiv"].Remove("title");
+            jsonObject["glossDiv"]["glossList"]["glossEntry"].Remove("id");
+            jsonObject["glossDiv"]["glossList"]["glossEntry"].Remove("float");
 
             // Act
-            var loadedGlossary = Glossary.SimpleJsonFactory.FromJson(json);
+            var loadedGlossary = Glossary.SimpleJsonFactory.FromJson(jsonObject.ToString());
 
             // Assert
             GlossaryTestSetup.LoadedTestGlossaryWithMissingValues.Glossary()

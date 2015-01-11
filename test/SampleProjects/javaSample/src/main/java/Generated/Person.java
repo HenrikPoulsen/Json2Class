@@ -19,6 +19,7 @@ public class Person{
     public String name;
     public int age;
     public String country;
+    public Boolean isHuman;
     public List<Person> family;
 
     public static class JsonSimpleFactory
@@ -29,6 +30,7 @@ public class Person{
             json.put("name", obj.name);
             json.put("age", obj.age);
             json.put("country", obj.country);
+            json.put("isHuman", obj.isHuman);
 
             if(obj.family != null) {
                 tempArray = new JSONArray();
@@ -52,6 +54,9 @@ public class Person{
             }
             if(jsonObject.containsKey("country")) {
                 obj.country = (String)jsonObject.get("country");
+            }
+            if(jsonObject.containsKey("isHuman")) {
+                obj.isHuman = (Boolean)jsonObject.get("isHuman");
             }
             if(jsonObject.containsKey("family")) {
                 obj.family = new ArrayList<Person>();

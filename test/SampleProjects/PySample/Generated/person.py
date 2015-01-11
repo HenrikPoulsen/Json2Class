@@ -11,6 +11,7 @@ class Person(object):
         self._name = ""
         self._age = 0
         self._country = ""
+        self._is_human = False
         self._family = []
 
     @property
@@ -44,6 +45,16 @@ class Person(object):
         self._country = value
 
     @property
+    def is_human(self):
+        """:rtype: bool"""
+        return self._is_human
+    @is_human.setter
+    def is_human(self, value):
+        """:type value: bool
+           :rtype: None"""
+        self._is_human = value
+
+    @property
     def family(self):
         """:rtype: list of [Person]"""
         return self._family
@@ -69,6 +80,7 @@ class Person(object):
                     'name': obj.name,
                     'age': obj.age,
                     'country': obj.country,
+                    'isHuman': obj.is_human,
                     'family': [],
                 }
                 for item in obj.family:
@@ -89,6 +101,8 @@ class Person(object):
                 obj._age = json_obj["age"]
             if "country" in json_obj:
                 obj._country = json_obj["country"]
+            if "isHuman" in json_obj:
+                obj._is_human = json_obj["isHuman"]
             if "family" in json_obj:
                 obj._family = []
                 for item in json_obj["family"]:

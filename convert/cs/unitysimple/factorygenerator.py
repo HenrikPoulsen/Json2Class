@@ -22,23 +22,37 @@ class FactoryGenerator(BaseFactoryGenerator):
         return serializers
 
     def _generate_to_json(self):
-        serializer = ("            public static JSONNode ToJson({0} obj)\n"
+        serializer = ("            public static string ToJson({0} obj)\n"
                       "            {{\n"
-                      "                var json = new JSONClass();\n").format(_capitalize(self.data.name))
+                      "                var jsonObject = ToJsonObject(obj);\n"
+                      "                return jsonObject.ToString();\n"
+                      "            }}\n"
+                      "\n"
+                      "            public static JSONNode ToJsonObject({0} obj)\n"
+                      "            {{\n"
+                      "                var jsonObject = new JSONClass();\n").format(_capitalize(self.data.name))
         for member in self.data.data:
             if member.type == ParsedObjectType.Object:
                 serializer += _serialize_object_member(member, self.namespace)
             elif member.type == ParsedObjectType.Array:
                 serializer += _serialize_array_member(member, self.namespace)
             else:
-                serializer += "                json[\"{0}\"] = new JSONData(obj.{1});\n".format(member.name, _capitalize(member.name))
+                if member.type == ParsedObjectType.String:
+                    serializer += "                if (obj.{0} != null)\n    ".format(_capitalize(member.name))
+                serializer += "                jsonObject[\"{0}\"] = new JSONData(obj.{1});\n".format(member.name, _capitalize(member.name))
 
-        serializer += ("                return json;\n"
+        serializer += ("                return jsonObject;\n"
                        "            }\n\n")
         return serializer
 
     def _generate_from_json(self):
-        serializer = ("            public static {0} FromJson(JSONNode json)\n"
+        serializer = ("            public static {0} FromJson(string jsonString)\n"
+                      "            {{\n"
+                      "                var jsonObject = JSON.Parse(jsonString);\n"
+                      "                return FromJsonObject(jsonObject);\n"
+                      "            }}\n"
+                      "\n"
+                      "            public static {0} FromJsonObject(JSONNode jsonObject)\n"
                       "            {{\n").format(_capitalize(self.data.name))
 
         # member initialization
@@ -67,18 +81,18 @@ def _member_initialization(member, namespace):
     :param member:
     :return:
     """
-    json_container_string = "json[\"{0}\"]".format(member.name)
+    json_container_string = "jsonObject[\"{0}\"]".format(member.name)
 
     if member.type == ParsedObjectType.Object:
-        return "                var {0} = {3} != null ? {1}.{2}.SimpleJsonFactory.FromJson({3}) : null;\n".format(member.name, namespace, _capitalize(member.name), json_container_string)
+        return "                var {0} = {3} != null ? {1}.{2}.SimpleJsonFactory.FromJsonObject({3}) : null;\n".format(member.name, namespace, _capitalize(member.name), json_container_string)
     elif member.type == ParsedObjectType.Array:
         result = ("                var {2} = {1}();\n"
-                  "                foreach(JSONNode item in json[\"{2}\"].AsArray)\n"
+                  "                foreach(JSONNode item in jsonObject[\"{2}\"].AsArray)\n"
                   "                {{\n").format(_capitalize(member.name), _get_member_initialization_string(member, json_container_string), member.name)
         child = member.data[0]
 
         if child.type == ParsedObjectType.Object:
-            result += "                    {0}.Add({1}.{2}.SimpleJsonFactory.FromJson(item));\n".format(member.name, namespace, _capitalize(child.name))
+            result += "                    {0}.Add({1}.{2}.SimpleJsonFactory.FromJsonObject(item));\n".format(member.name, namespace, _capitalize(child.name))
         else:
             result += "                    {0}.Add(item{1});\n".format(member.name, _json_load_as(child))
         result += "                }\n\n"
@@ -132,7 +146,8 @@ def _get_type_name(member):
 
 
 def _serialize_object_member(member, namespace):
-    return "                json[\"{0}\"] = obj.{1} != null ? {2}.{1}.SimpleJsonFactory.ToJson(obj.{1}) : null;\n".format(member.name, _capitalize(member.name), namespace)
+    return ("                if (obj.{1} != null)\n"
+            "                    jsonObject[\"{0}\"] = {2}.{1}.SimpleJsonFactory.ToJsonObject(obj.{1});\n").format(member.name, _capitalize(member.name), namespace)
 
 
 def _serialize_array_member(member, namespace):
@@ -142,11 +157,11 @@ def _serialize_array_member(member, namespace):
     serializer += "                    foreach(var item in obj.{0})\n".format(_capitalize(member.name))
     serializer += "                    {\n"
     if member.data[0].type == ParsedObjectType.Object:
-        serializer += "                        {0}.Add({1}.{2}.SimpleJsonFactory.ToJson(item));\n".format(member.name, namespace, _capitalize(member.data[0].name))
+        serializer += "                        {0}.Add({1}.{2}.SimpleJsonFactory.ToJsonObject(item));\n".format(member.name, namespace, _capitalize(member.data[0].name))
     else:
         serializer += "                        {0}.Add(new JSONData(item));\n".format(member.name)
     serializer += "                    }\n"
-    serializer += "                    json[\"{0}\"] = {0};\n".format(member.name)
+    serializer += "                    jsonObject[\"{0}\"] = {0};\n".format(member.name)
     serializer += "                }\n"
     return serializer
 

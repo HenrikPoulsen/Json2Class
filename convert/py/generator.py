@@ -22,6 +22,8 @@ class Generator(BaseGenerator):
                     constructor += "        self._{0} = 0.0\n".format(_camel_case(member.name))
                 elif member.type == ParsedObjectType.Object:
                     constructor += "        self._{0} = None\n".format(_camel_case(member.name))
+                elif member.type == ParsedObjectType.Bool:
+                    constructor += "        self._{0} = False\n".format(_camel_case(member.name))
         constructor += "\n"
 
         return constructor
