@@ -4,7 +4,8 @@ from convert.base.parsedobject import ParsedObjectType
 
 class FactoryGenerator(BaseFactoryGenerator):
     def generate_import(self):
-        result = "import org.json.simple.JSONObject;\n"
+        result = "import org.json.simple.JSONObject;\n" \
+                 "import org.json.simple.JSONValue;\n"
         for member in self.data.data:
             if member.type == ParsedObjectType.Array:
                 result += ("import java.util.List;\n"
@@ -14,7 +15,12 @@ class FactoryGenerator(BaseFactoryGenerator):
         return result
 
     def _generate_from_json(self):
-        constructor = ("        public static {0} fromJson(JSONObject jsonObject) {{\n"
+        constructor = ("        public static {0} fromJson(String jsonString) {{\n"
+                       "            JSONObject jsonObject = (JSONObject)JSONValue.parse(jsonString);\n"
+                       "            return fromJsonObject(jsonObject);\n"
+                       "        }}\n"
+                       "\n"
+                       "        public static {0} fromJsonObject(JSONObject jsonObject) {{\n"
                        "            if(jsonObject == null) {{\n"
                        "                return null;\n"
                        "            }}\n"
@@ -29,7 +35,12 @@ class FactoryGenerator(BaseFactoryGenerator):
         return constructor
 
     def _generate_to_json(self):
-        serializer = ("        public static JSONObject toJson({0} obj) {{\n"
+        serializer = ("        public static String toJson({0} obj) {{\n"
+                      "            JSONObject json = toJsonObject(obj);\n"
+                      "            return json.toString();\n"
+                      "        }}\n"
+                      "\n"
+                      "        public static JSONObject toJsonObject({0} obj) {{\n"
                       "            JSONObject json = new JSONObject();\n").format(_capitalize(self.data.name))
 
         for member in self.data.data:
@@ -92,7 +103,7 @@ def _member_initialization(member):
         child = member.data[0]
 
         if child.type == ParsedObjectType.Object:
-            result += "                    obj.{0}.add({1}.JsonSimpleFactory.fromJson((JSONObject)item));\n".format(member.name, _capitalize(child.name))
+            result += "                    obj.{0}.add({1}.JsonSimpleFactory.fromJsonObject((JSONObject)item));\n".format(member.name, _capitalize(child.name))
         else:
             result += "                    obj.{0}.add(({1})item);\n".format(member.name, _get_type_name(child, False))
         result += ("                }\n"
@@ -106,7 +117,7 @@ def _member_initialization(member):
 
 def _get_member_initialization_string(member, json_container):
     if member.type == ParsedObjectType.Object:
-        return "{0}.JsonSimpleFactory.fromJson((JSONObject){1})".format(_capitalize(member.name), json_container)
+        return "{0}.JsonSimpleFactory.fromJsonObject((JSONObject){1})".format(_capitalize(member.name), json_container)
     if member.type == ParsedObjectType.Array:
         return "new {0}".format( _get_type_name(member))
     return "{0}{1}".format(json_container, "")
@@ -125,7 +136,7 @@ def _get_type_name(member, primitive=True):
     if member.type == ParsedObjectType.Int or member.type == ParsedObjectType.Float or member.type == ParsedObjectType.Bool:
         if not primitive:
             if member.type == ParsedObjectType.Int:
-                return "Integer"
+                return "Long"
             elif member.type == ParsedObjectType.Bool:
                 return "Boolean"
             else:
@@ -137,7 +148,7 @@ def _get_type_name(member, primitive=True):
 
 
 def _serialize_object_member(member):
-    return "            json.put(\"{0}\", obj.{0} == null ? null : {1}.JsonSimpleFactory.toJson(obj.{0}));\n".format(member.name, _capitalize(member.name))
+    return "            json.put(\"{0}\", obj.{0} == null ? null : {1}.JsonSimpleFactory.toJsonObject(obj.{0}));\n".format(member.name, _capitalize(member.name))
 
 
 def _serialize_array_member(member):
@@ -145,7 +156,7 @@ def _serialize_array_member(member):
                   "                tempArray = new JSONArray();\n"
                   "                for({1} item : obj.{0}){{\n").format(member.name, _get_type_name(member.data[0], False))
     if member.data[0].type == ParsedObjectType.Object:
-        serializer += "                    tempArray.add({0}.JsonSimpleFactory.toJson(item));\n".format(_capitalize(member.data[0].name))
+        serializer += "                    tempArray.add({0}.JsonSimpleFactory.toJsonObject(item));\n".format(_capitalize(member.data[0].name))
     else:
         serializer += "                    tempArray.add(item);\n"
     serializer += "                }\n"

@@ -3,6 +3,7 @@ import Generated.Glossary;
 import Generated.Person;
 import junit.framework.TestCase;
 import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 
 import java.util.ArrayList;
 
@@ -13,7 +14,7 @@ public class JsonSimpleTest extends TestCase {
     public void testLoadedPersonHasExpectedName()
     {
         // Assemble
-        JSONObject json = Person.JsonSimpleFactory.toJson(PersonTestSetup.LoadedTestPersonHasExpectedName.Person());
+        String json = Person.JsonSimpleFactory.toJson(PersonTestSetup.LoadedTestPersonHasExpectedName.Person());
 
         // Act
         Person loadedPerson = Person.JsonSimpleFactory.fromJson(json);
@@ -25,7 +26,7 @@ public class JsonSimpleTest extends TestCase {
     public void testLoadedPersonHasExpectedAge()
     {
         // Assemble
-        JSONObject json = Person.JsonSimpleFactory.toJson(PersonTestSetup.LoadedTestPersonHasExpectedAge.Person());
+        String json = Person.JsonSimpleFactory.toJson(PersonTestSetup.LoadedTestPersonHasExpectedAge.Person());
 
         // Act
         Person loadedPerson = Person.JsonSimpleFactory.fromJson(json);
@@ -37,7 +38,7 @@ public class JsonSimpleTest extends TestCase {
     public void testLoadedPersonHasExpectedCountry()
     {
         // Assemble
-        JSONObject json = Person.JsonSimpleFactory.toJson(PersonTestSetup.LoadedTestPersonHasExpectedCountry.Person());
+        String json = Person.JsonSimpleFactory.toJson(PersonTestSetup.LoadedTestPersonHasExpectedCountry.Person());
 
         // Act
         Person loadedPerson = Person.JsonSimpleFactory.fromJson(json);
@@ -50,7 +51,7 @@ public class JsonSimpleTest extends TestCase {
     {
         // Assemble
 
-        JSONObject json = Person.JsonSimpleFactory.toJson(PersonTestSetup.LoadedTestPersonHasExpectedFamily.Person());
+        String json = Person.JsonSimpleFactory.toJson(PersonTestSetup.LoadedTestPersonHasExpectedFamily.Person());
 
         // Act
         Person loadedPerson = Person.JsonSimpleFactory.fromJson(json);
@@ -61,12 +62,13 @@ public class JsonSimpleTest extends TestCase {
 
     public void testLoadedPersonWithMissingValues()
     {
-        JSONObject json = Person.JsonSimpleFactory.toJson(PersonTestSetup.LoadedTestPersonWithMissingValues.Person());
-        json.remove("age");
-        json.remove("family");
+        String json = Person.JsonSimpleFactory.toJson(PersonTestSetup.LoadedTestPersonWithMissingValues.Person());
+        JSONObject jsonObject = (JSONObject)JSONValue.parse(json);
+        jsonObject.remove("age");
+        jsonObject.remove("family");
 
         // Act
-        Person loadedPerson = Person.JsonSimpleFactory.fromJson(json);
+        Person loadedPerson = Person.JsonSimpleFactory.fromJson(jsonObject.toString());
 
         // Assert
         assertReflectionEquals(PersonTestSetup.LoadedTestPersonWithMissingValues.Person(), loadedPerson);
@@ -76,7 +78,7 @@ public class JsonSimpleTest extends TestCase {
     {
         Person person = PersonTestSetup.LoadedTestPersonHasNullFamily.Person();
         person.family = null;
-        JSONObject json = Person.JsonSimpleFactory.toJson(person);
+        String json = Person.JsonSimpleFactory.toJson(person);
 
         // Act
         Person loadedGlossary = Person.JsonSimpleFactory.fromJson(json);
@@ -87,7 +89,7 @@ public class JsonSimpleTest extends TestCase {
 
     public void testLoadedGlossaryHasExpectedEmptyValues()
     {
-        JSONObject json = Glossary.JsonSimpleFactory.toJson(GlossaryTestSetup.LoadedTestGlossaryHasExpectedEmptyValues.Glossary());
+        String json = Glossary.JsonSimpleFactory.toJson(GlossaryTestSetup.LoadedTestGlossaryHasExpectedEmptyValues.Glossary());
 
         // Act
         Glossary loadedGlossary = Glossary.JsonSimpleFactory.fromJson(json);
@@ -98,14 +100,15 @@ public class JsonSimpleTest extends TestCase {
 
     public void testLoadedGlossaryWithMissingValues()
     {
-        JSONObject json = Glossary.JsonSimpleFactory.toJson(GlossaryTestSetup.LoadedTestGlossaryWithMissingValues.Glossary());
-        json.remove("title");
-        ((JSONObject)json.get("glossDiv")).remove("title");
-        ((JSONObject)((JSONObject)((JSONObject)json.get("glossDiv")).get("glossList")).get("glossEntry")).remove("id");
-        ((JSONObject)((JSONObject)((JSONObject)json.get("glossDiv")).get("glossList")).get("glossEntry")).remove("float");
+        String json = Glossary.JsonSimpleFactory.toJson(GlossaryTestSetup.LoadedTestGlossaryWithMissingValues.Glossary());
+        JSONObject jsonObject = (JSONObject)JSONValue.parse(json);
+        jsonObject.remove("title");
+        ((JSONObject)jsonObject.get("glossDiv")).remove("title");
+        ((JSONObject)((JSONObject)((JSONObject)jsonObject.get("glossDiv")).get("glossList")).get("glossEntry")).remove("id");
+        ((JSONObject)((JSONObject)((JSONObject)jsonObject.get("glossDiv")).get("glossList")).get("glossEntry")).remove("float");
 
         // Act
-        Glossary loadedGlossary = Glossary.JsonSimpleFactory.fromJson(json);
+        Glossary loadedGlossary = Glossary.JsonSimpleFactory.fromJson(jsonObject.toString());
 
         // Assert
         assertReflectionEquals(GlossaryTestSetup.LoadedTestGlossaryWithMissingValues.Glossary(), loadedGlossary);

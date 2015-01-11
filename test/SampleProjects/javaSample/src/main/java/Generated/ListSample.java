@@ -1,6 +1,7 @@
 package Generated;
 
 import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 import java.util.List;
 import java.util.ArrayList;
 import org.json.simple.JSONArray;
@@ -12,25 +13,30 @@ import org.json.simple.JSONArray;
 
 public class ListSample{
     public ListSample() {
-        intList = new ArrayList<Integer>();
+        intList = new ArrayList<Long>();
         floatList = new ArrayList<Float>();
         stringList = new ArrayList<String>();
         objectList = new ArrayList<ObjectList>();
     }
-    public List<Integer> intList;
+    public List<Long> intList;
     public List<Float> floatList;
     public List<String> stringList;
     public List<ObjectList> objectList;
 
     public static class JsonSimpleFactory
     {
-        public static JSONObject toJson(ListSample obj) {
+        public static String toJson(ListSample obj) {
+            JSONObject json = toJsonObject(obj);
+            return json.toString();
+        }
+
+        public static JSONObject toJsonObject(ListSample obj) {
             JSONObject json = new JSONObject();
             JSONArray tempArray;
 
             if(obj.intList != null) {
                 tempArray = new JSONArray();
-                for(Integer item : obj.intList){
+                for(Long item : obj.intList){
                     tempArray.add(item);
                 }
                 json.put("intList", tempArray);
@@ -55,21 +61,26 @@ public class ListSample{
             if(obj.objectList != null) {
                 tempArray = new JSONArray();
                 for(ObjectList item : obj.objectList){
-                    tempArray.add(ObjectList.JsonSimpleFactory.toJson(item));
+                    tempArray.add(ObjectList.JsonSimpleFactory.toJsonObject(item));
                 }
                 json.put("objectList", tempArray);
             }
             return json;
         }
-        public static ListSample fromJson(JSONObject jsonObject) {
+        public static ListSample fromJson(String jsonString) {
+            JSONObject jsonObject = (JSONObject)JSONValue.parse(jsonString);
+            return fromJsonObject(jsonObject);
+        }
+
+        public static ListSample fromJsonObject(JSONObject jsonObject) {
             if(jsonObject == null) {
                 return null;
             }
             ListSample obj = new ListSample();
             if(jsonObject.containsKey("intList")) {
-                obj.intList = new ArrayList<Integer>();
+                obj.intList = new ArrayList<Long>();
                 for(Object item : (JSONArray)jsonObject.get("intList")) {
-                    obj.intList.add((Integer)item);
+                    obj.intList.add((Long)item);
                 }
             }
             if(jsonObject.containsKey("floatList")) {
@@ -87,7 +98,7 @@ public class ListSample{
             if(jsonObject.containsKey("objectList")) {
                 obj.objectList = new ArrayList<ObjectList>();
                 for(Object item : (JSONArray)jsonObject.get("objectList")) {
-                    obj.objectList.add(ObjectList.JsonSimpleFactory.fromJson((JSONObject)item));
+                    obj.objectList.add(ObjectList.JsonSimpleFactory.fromJsonObject((JSONObject)item));
                 }
             }
             return obj;

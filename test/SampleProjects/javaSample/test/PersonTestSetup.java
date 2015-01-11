@@ -20,7 +20,7 @@ class PersonTestSetup
         public static Person Person()
         {
             Person temp = new Person();
-            temp.age = 100;
+            temp.age = Long.valueOf(100);
             return temp;
         }
     }
@@ -41,12 +41,12 @@ class PersonTestSetup
         {
             Person temp = new Person();
             temp.name = "empty";
-            temp.age = 10;
+            temp.age = Long.valueOf(10);
             temp.country = "Whatever";
             temp.family = new ArrayList<Person>();
             temp.family.add(new Person());
             temp.family.get(0).name = "Family";
-            temp.family.get(0).age = -1;
+            temp.family.get(0).age = Long.valueOf(-1);
             temp.family.get(0).country = "Random";
             temp.family.add(new Person());
             return temp;
@@ -59,7 +59,7 @@ class PersonTestSetup
         {
             Person temp = new Person();
             temp.name = "Empty";
-            temp.age = 10;
+            temp.age = Long.valueOf(10);
             temp.country = "Whatever";
             temp.family = new ArrayList<Person>();
             return temp;

@@ -1,6 +1,7 @@
 package Generated;
 
 import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 import java.util.List;
 import java.util.ArrayList;
 import org.json.simple.JSONArray;
@@ -20,7 +21,12 @@ public class GlossDef{
 
     public static class JsonSimpleFactory
     {
-        public static JSONObject toJson(GlossDef obj) {
+        public static String toJson(GlossDef obj) {
+            JSONObject json = toJsonObject(obj);
+            return json.toString();
+        }
+
+        public static JSONObject toJsonObject(GlossDef obj) {
             JSONObject json = new JSONObject();
             JSONArray tempArray;
             json.put("para", obj.para);
@@ -34,7 +40,12 @@ public class GlossDef{
             }
             return json;
         }
-        public static GlossDef fromJson(JSONObject jsonObject) {
+        public static GlossDef fromJson(String jsonString) {
+            JSONObject jsonObject = (JSONObject)JSONValue.parse(jsonString);
+            return fromJsonObject(jsonObject);
+        }
+
+        public static GlossDef fromJsonObject(JSONObject jsonObject) {
             if(jsonObject == null) {
                 return null;
             }

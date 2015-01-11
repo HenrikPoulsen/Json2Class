@@ -1,6 +1,7 @@
 package Generated;
 
 import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 import java.util.List;
 import java.util.ArrayList;
 import org.json.simple.JSONArray;
@@ -17,14 +18,19 @@ public class Person{
         family = new ArrayList<Person>();
     }
     public String name;
-    public int age;
+    public Long age;
     public String country;
     public Boolean isHuman;
     public List<Person> family;
 
     public static class JsonSimpleFactory
     {
-        public static JSONObject toJson(Person obj) {
+        public static String toJson(Person obj) {
+            JSONObject json = toJsonObject(obj);
+            return json.toString();
+        }
+
+        public static JSONObject toJsonObject(Person obj) {
             JSONObject json = new JSONObject();
             JSONArray tempArray;
             json.put("name", obj.name);
@@ -35,13 +41,18 @@ public class Person{
             if(obj.family != null) {
                 tempArray = new JSONArray();
                 for(Person item : obj.family){
-                    tempArray.add(Person.JsonSimpleFactory.toJson(item));
+                    tempArray.add(Person.JsonSimpleFactory.toJsonObject(item));
                 }
                 json.put("family", tempArray);
             }
             return json;
         }
-        public static Person fromJson(JSONObject jsonObject) {
+        public static Person fromJson(String jsonString) {
+            JSONObject jsonObject = (JSONObject)JSONValue.parse(jsonString);
+            return fromJsonObject(jsonObject);
+        }
+
+        public static Person fromJsonObject(JSONObject jsonObject) {
             if(jsonObject == null) {
                 return null;
             }
@@ -50,7 +61,7 @@ public class Person{
                 obj.name = (String)jsonObject.get("name");
             }
             if(jsonObject.containsKey("age")) {
-                obj.age = (Integer)jsonObject.get("age");
+                obj.age = (Long)jsonObject.get("age");
             }
             if(jsonObject.containsKey("country")) {
                 obj.country = (String)jsonObject.get("country");
@@ -61,7 +72,7 @@ public class Person{
             if(jsonObject.containsKey("family")) {
                 obj.family = new ArrayList<Person>();
                 for(Object item : (JSONArray)jsonObject.get("family")) {
-                    obj.family.add(Person.JsonSimpleFactory.fromJson((JSONObject)item));
+                    obj.family.add(Person.JsonSimpleFactory.fromJsonObject((JSONObject)item));
                 }
             }
             return obj;
