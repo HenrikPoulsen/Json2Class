@@ -60,7 +60,7 @@ class Generator(BaseGenerator):
                    "# Modifications to this file will be lost the next time you run the tool.           #\n"
                    "# {0}#\n"
                    "#####################################################################################\n\n").format(date_str)
-        result += "\nclass {0}:\n".format(_capitalize(self.data.name))
+        result += "\nclass {0}(object):\n".format(_capitalize(self.data.name))
         return result
 
     def file_name(self, json_name):

@@ -12,6 +12,8 @@ class FactoryGenerator(BaseFactoryGenerator):
                        "        def from_json(json_obj):\n"
                        "            \"\"\":type json_obj: dict\n"
                        "               :rtype: {0}\"\"\"\n"
+                       "            if json_obj is None:\n"
+                       "                return None\n"
                        "            obj = {0}()\n").format(_capitalize(self.data.name))
 
         for member in self.data.data:
@@ -28,6 +30,8 @@ class FactoryGenerator(BaseFactoryGenerator):
                   "            return {0}.JsonFactory.JsonEncoder().encode(self)\n\n"
                   "        class JsonEncoder(json.JSONEncoder):\n"
                   "            def default(self, obj):\n"
+                  "                if obj is None:\n"
+                  "                    return None\n"
                   "                d = {{\n").format(_capitalize(self.data.name))
         for member in self.data.data:
             result += _member_save(member)
@@ -51,25 +55,27 @@ class FactoryGenerator(BaseFactoryGenerator):
 def _member_load(member):
     json_container_string = "json_obj[\"{0}\"]".format(member.name)
     if member.type == ParsedObjectType.Object:
-        return "            obj._{0} = {1}.JsonFactory.from_json({2})\n".format(_camel_case(member.name), _capitalize(member.name), json_container_string)
+        return ("            if \"{3}\" in json_obj:\n"
+                "                obj._{0} = {1}.JsonFactory.from_json({2})\n").format(_camel_case(member.name), _capitalize(member.name), json_container_string, member.name)
     elif member.type == ParsedObjectType.Array:
-        result = ("            obj._{0} = []\n"
-                  "            for item in {1}:\n").format(_camel_case(member.name), json_container_string)
+        result = ("            if \"{2}\" in json_obj:\n"
+                  "                obj._{0} = []\n"
+                  "                for item in {1}:\n").format(_camel_case(member.name), json_container_string, member.name)
         child = member.data[0]
 
         if child.type == ParsedObjectType.Object:
-            result += "                obj._{0}.append({1}.JsonFactory.from_json(item))\n".format(_camel_case(member.name), _capitalize(child.name))
+            result += "                    obj._{0}.append({1}.JsonFactory.from_json(item))\n".format(_camel_case(member.name), _capitalize(child.name))
         else:
-            result += "                obj._{0}.append(item)\n".format(_camel_case(member.name))
+            result += "                    obj._{0}.append(item)\n".format(_camel_case(member.name))
         return result
     else:
-        return "            obj._{0} = {1}\n".format(_camel_case(member.name), json_container_string)
-
+        return ("            if \"{2}\" in json_obj:\n"
+                "                obj._{0} = {1}\n").format(_camel_case(member.name), json_container_string, member.name)
 
 
 def _member_save(member):
     if member.type == ParsedObjectType.Object:
-        return "                    '{0}': {2}.JsonFactory.to_json(obj.{1}),\n".format(member.name, _camel_case(member.name), _capitalize(member.name))
+        return "                    '{0}': {2}.JsonFactory.JsonEncoder().default(obj.{1}),\n".format(member.name, _camel_case(member.name), _capitalize(member.name))
     if member.type == ParsedObjectType.Array:
         return "                    '{0}': [],\n".format(member.name)
     return "                    '{0}': obj.{1},\n".format(member.name, _camel_case(member.name))
@@ -85,7 +91,7 @@ def _member_save_list(member):
 
     child = member.data[0]
     if child.type == ParsedObjectType.Object:
-        result += "                    d['family'].append({0}.JsonFactory.to_json(item))\n".format(_capitalize(child.name))
+        result += "                    d['family'].append({0}.JsonFactory.JsonEncoder().default(item))\n".format(_capitalize(child.name))
     else:
         result += "                    d['family'].append(item)\n"
     result += "\n"

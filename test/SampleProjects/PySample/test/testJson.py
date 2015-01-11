@@ -1,97 +1,142 @@
 import unittest
+import json
+import sys
 from Generated.glossary import Glossary
 from Generated.person import Person
 from test.GlossaryTestSetup import GlossaryTestSetup
 from test.PersonTestSetup import PersonTestSetup
-from testfixtures import Comparison as C
+from testfixtures import Comparison
+from testfixtures import compare
+
 
 
 class TestJson(unittest.TestCase):
+
     def testLoadedPersonHasExpectedName(self):
         # Assemble
-        json = Person.JsonFactory.to_json(PersonTestSetup.LoadedTestPersonHasExpectedName.person())
+        json_str = Person.JsonFactory.to_json(PersonTestSetup.LoadedTestPersonHasExpectedName.person())
+        json_obj = json.loads(json_str)
 
         # Act
-        loadedPerson = Person.JsonFactory.from_json(json)
+        loaded_person = Person.JsonFactory.from_json(json_obj)
 
         # Assert
-        C(PersonTestSetup.LoadedTestPersonHasExpectedName.person()) == loadedPerson
+        self.assertEqual(Comparison(PersonTestSetup.LoadedTestPersonHasExpectedName.person()), loaded_person)
 
     def testLoadedPersonHasExpectedAge(self):
         # Assemble
-        json = Person.JsonFactory.to_json(PersonTestSetup.LoadedTestPersonHasExpectedAge.person())
+        json_str = Person.JsonFactory.to_json(PersonTestSetup.LoadedTestPersonHasExpectedAge.person())
+        json_obj = json.loads(json_str)
 
         # Act
-        loadedPerson = Person.JsonFactory.from_json(json)
+        loaded_person = Person.JsonFactory.from_json(json_obj)
 
         # Assert
-        C(PersonTestSetup.LoadedTestPersonHasExpectedAge.person()) == loadedPerson
+        expected_object = PersonTestSetup.LoadedTestPersonHasExpectedAge.person()
+        compare(expected_object, loaded_person)
 
     def testLoadedPersonHasExpectedCountry(self):
         # Assemble
-        json = Person.JsonFactory.to_json(PersonTestSetup.LoadedTestPersonHasExpectedCountry.person())
+        json_str = Person.JsonFactory.to_json(PersonTestSetup.LoadedTestPersonHasExpectedCountry.person())
+        json_obj = json.loads(json_str)
 
         # Act
-        loadedPerson = Person.JsonFactory.from_json(json)
+        loaded_person = Person.JsonFactory.from_json(json_obj)
 
         # Assert
-        C(PersonTestSetup.LoadedTestPersonHasExpectedCountry.person()) == loadedPerson
+        self.assertEqual(Comparison(PersonTestSetup.LoadedTestPersonHasExpectedCountry.person()), loaded_person)
 
     def testLoadedPersonHasExpectedFamily(self):
         # Assemble
-        json = Person.JsonFactory.to_json(PersonTestSetup.LoadedTestPersonHasExpectedFamily.person())
+        json_str = Person.JsonFactory.to_json(PersonTestSetup.LoadedTestPersonHasExpectedFamily.person())
+        json_obj = json.loads(json_str)
 
         # Act
-        loadedPerson = Person.JsonFactory.from_json(json)
+        loaded_person = Person.JsonFactory.from_json(json_obj)
 
         # Assert
-        PersonTestSetup.LoadedTestPersonHasExpectedFamily.person().ToExpectedObject().ShouldMatch(loadedPerson)
+        expected_person = PersonTestSetup.LoadedTestPersonHasExpectedFamily.person()
+        compare(expected_person, loaded_person, strict=True)
 
     def testLoadedPersonWithMissingValues(self):
         # Assemble
-        json = Person.JsonFactory.to_json(PersonTestSetup.LoadedTestPersonWithMissingValues.person())
-        json.Remove("age")
-        json.Remove("family")
+        json_str = Person.JsonFactory.to_json(PersonTestSetup.LoadedTestPersonWithMissingValues.person())
+        json_str = json_str.replace(", \"age\": 0", "")
+        json_str = json_str.replace(", \"family\": []", "")
+        json_obj = json.loads(json_str)
 
         # Act
-        loadedGlossary = Person.JsonFactory.from_json(json)
+        loaded_person = Person.JsonFactory.from_json(json_obj)
 
         # Assert
-        C(PersonTestSetup.LoadedTestPersonWithMissingValues.person()) == loadedGlossary
+        compare(PersonTestSetup.LoadedTestPersonWithMissingValues.person(), loaded_person, strict=True)
 
     def testLoadedPersonHasNullFamily(self):
         # Assemble
         person = PersonTestSetup.LoadedTestPersonHasNullFamily.person()
         person.Family = None
-        json = Person.JsonFactory.to_json(person)
+        json_str = Person.JsonFactory.to_json(person)
+        json_obj = json.loads(json_str)
 
         # Act
-        loadedPerson = Person.JsonFactory.from_json(json)
+        loaded_person = Person.JsonFactory.from_json(json_obj)
 
         # Assert
-        C(PersonTestSetup.LoadedTestPersonHasNullFamily.person()) == loadedPerson
+        compare(PersonTestSetup.LoadedTestPersonHasNullFamily.person(), loaded_person)
 
     def testLoadedGlossaryHasExpectedEmptyValues(self):
         # Assemble
-        json = Glossary.JsonFactory.to_json(GlossaryTestSetup.LoadedTestGlossaryHasExpectedEmptyValues.glossary())
+        json_str = Glossary.JsonFactory.to_json(GlossaryTestSetup.LoadedTestGlossaryHasExpectedEmptyValues.glossary())
+        json_obj = json.loads(json_str)
 
         # Act
-        loadedGlossary = Glossary.JsonFactory.from_json(json)
+        loaded_glossary = Glossary.JsonFactory.from_json(json_obj)
 
         # Assert
-        C(GlossaryTestSetup.LoadedTestGlossaryHasExpectedEmptyValues.glossary()) == loadedGlossary
+        compare(GlossaryTestSetup.LoadedTestGlossaryHasExpectedEmptyValues.glossary(), loaded_glossary)
 
     def testLoadedGlossaryWithMissingValues(self):
         # Assemble
-        json = Glossary.JsonFactory.to_json(GlossaryTestSetup.LoadedTestGlossaryWithMissingValues.glossary())
-        json.Remove("title")
-        json["glossDiv"].Remove("title")
-        json["glossDiv"]["glossList"]["glossEntry"].Remove("id")
-        json["glossDiv"]["glossList"]["glossEntry"].Remove("float")
+        json_str = Glossary.JsonFactory.to_json(GlossaryTestSetup.LoadedTestGlossaryWithMissingValues.glossary())
+        json_obj = json.loads(json_str)
+        json_obj.pop("title", None)
+        json_obj["glossDiv"].pop("title", None)
+        json_obj["glossDiv"]["glossList"]["glossEntry"].pop("id", None)
+        json_obj["glossDiv"]["glossList"]["glossEntry"].pop("float", None)
 
         # Act
-        loadedGlossary = Glossary.JsonFactory.from_json(json)
+        loaded_glossary = Glossary.JsonFactory.from_json(json_obj)
 
         # Assert
-        C(GlossaryTestSetup.LoadedTestGlossaryWithMissingValues.glossary()) == loadedGlossary
+        expected_object = GlossaryTestSetup.LoadedTestGlossaryWithMissingValues.glossary()
+        compare(expected_object, loaded_glossary)
 
+    def testLoadedGlossaryMismatchedValues(self):
+        # Assemble
+        json_str = Glossary.JsonFactory.to_json(GlossaryTestSetup.LoadedTestGlossaryHasExpectedEmptyValues.glossary())
+        json_obj = json.loads(json_str)
+
+        # Act
+        loaded_glossary = Glossary.JsonFactory.from_json(json_obj)
+        loaded_glossary.title = "Different"
+
+        # Assert
+        try:
+            compare(GlossaryTestSetup.LoadedTestGlossaryHasExpectedEmptyValues.glossary(), loaded_glossary)
+        except AssertionError as err:
+            self.assertEqual("Glossary title  != Glossary title Different", err.message)
+
+
+def _get_dict(obj):
+    if obj is None:
+        return None
+    d = obj.__dict__
+    for key in d:
+        value = d[key]
+        t = type(value)
+        if isinstance(value, (str, unicode, int, long, float, complex, dict)):
+            print "ignore"
+        else:
+            d[key] = _get_dict(value)
+        print key
+    return d
