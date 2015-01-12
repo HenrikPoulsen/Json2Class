@@ -211,22 +211,22 @@ namespace SimpleJSON
  
         internal static string Escape(string aText)
         {
-            string result = "";
+            var result = new StringBuilder();
             foreach(char c in aText)
             {
                 switch(c)
                 {
-                    case '\\' : result += "\\\\"; break;
-                    case '\"' : result += "\\\""; break;
-                    case '\n' : result += "\\n" ; break;
-                    case '\r' : result += "\\r" ; break;
-                    case '\t' : result += "\\t" ; break;
-                    case '\b' : result += "\\b" ; break;
-                    case '\f' : result += "\\f" ; break;
-                    default   : result += c     ; break;
+                    case '\\' : result.Append("\\\\"); break;
+                    case '\"' : result.Append("\\\""); break;
+                    case '\n' : result.Append("\\n") ; break;
+                    case '\r' : result.Append("\\r") ; break;
+                    case '\t' : result.Append("\\t") ; break;
+                    case '\b' : result.Append("\\b") ; break;
+                    case '\f' : result.Append("\\f") ; break;
+                    default   : result.Append(c)     ; break;
                 }
             }
-            return result;
+            return result.ToString();
         }
  
         public static JSONNode Parse(string aJSON)
@@ -239,12 +239,13 @@ namespace SimpleJSON
             bool QuoteMode = false;
             while (i < aJSON.Length)
             {
-                switch (aJSON[i])
+                var currentChar = aJSON[i];
+                switch (currentChar)
                 {
                     case '{':
                         if (QuoteMode)
                         {
-                            Token.Append(aJSON[i]);
+                            Token.Append(currentChar);
                             break;
                         }
                         stack.Push(new JSONClass());
@@ -253,7 +254,7 @@ namespace SimpleJSON
                             TokenName = TokenName.Trim();
                             if (ctx is JSONArray)
                                 ctx.Add(stack.Peek());
-                            else if (TokenName != "")
+                            else if (TokenName.Length != 0)
                                 ctx.Add(TokenName,stack.Peek());
                         }
                         TokenName = "";
@@ -264,7 +265,7 @@ namespace SimpleJSON
                     case '[':
                         if (QuoteMode)
                         {
-                            Token.Append(aJSON[i]);
+                            Token.Append(currentChar);
                             break;
                         }
  
@@ -274,7 +275,7 @@ namespace SimpleJSON
                             TokenName = TokenName.Trim();
                             if (ctx is JSONArray)
                                 ctx.Add(stack.Peek());
-                            else if (TokenName != "")
+                            else if (TokenName.Length != 0)
                                 ctx.Add(TokenName,stack.Peek());
                         }
                         TokenName = "";
@@ -287,7 +288,7 @@ namespace SimpleJSON
                     {
                         if (QuoteMode)
                         {
-                            Token.Append(aJSON[i]);
+                            Token.Append(currentChar);
                             break;
                         }
                         if (stack.Count == 0)
@@ -295,12 +296,12 @@ namespace SimpleJSON
  
                         stack.Pop();
                         var tokenString = Token.ToString();
-                        if (tokenString != "")
+                        if (tokenString.Length != 0)
                         {
                             TokenName = TokenName.Trim();
                             if (ctx is JSONArray)
                                 ctx.Add(tokenString);
-                            else if (TokenName != "")
+                            else if (TokenName.Length != 0)
                                 ctx.Add(TokenName, tokenString);
                         }
                         TokenName = "";
@@ -314,7 +315,7 @@ namespace SimpleJSON
                     case ':':
                         if (QuoteMode)
                         {
-                            Token.Append(aJSON[i]);
+                            Token.Append(currentChar);
                             break;
                         }
                         TokenName = Token.ToString();
@@ -329,15 +330,15 @@ namespace SimpleJSON
                     {
                         if (QuoteMode)
                         {
-                            Token.Append(aJSON[i]);
+                            Token.Append(currentChar);
                             break;
                         }
                         var tokenString = Token.ToString();
-                        if (tokenString != "")
+                        if (tokenString.Length != 0)
                         {
                             if (ctx is JSONArray)
                                 ctx.Add(tokenString);
-                            else if (TokenName != "")
+                            else if (TokenName.Length != 0)
                                 ctx.Add(TokenName, tokenString);
                         }
                         TokenName = "";
@@ -353,14 +354,14 @@ namespace SimpleJSON
                     case ' ':
                     case '\t':
                         if (QuoteMode)
-                            Token.Append(aJSON[i]);
+                            Token.Append(currentChar);
                     break;
  
                     case '\\':
                         ++i;
                         if (QuoteMode)
                         {
-                            char C = aJSON[i];
+                            char C = currentChar;
                             switch (C)
                             {
                                 case 't' : Token.Append('\t'); break;
@@ -381,7 +382,7 @@ namespace SimpleJSON
                     break;
  
                     default:
-                        Token.Append(aJSON[i]);
+                        Token.Append(currentChar);
                     break;
                 }
                 ++i;
@@ -649,28 +650,32 @@ namespace SimpleJSON
         }
         public override string ToString()
         {
-            string result = "[ ";
+            var result = new StringBuilder("[ ");
             foreach (JSONNode N in m_List)
             {
                 if (result.Length > 2)
-                    result += ", ";
-                result += N.ToString();
+                    result.Append(", ");
+                result.Append(N.ToString());
             }
-            result += " ]";
-            return result;
+            result.Append(" ]");
+            return result.ToString();
         }
         public override string ToString(string aPrefix)
         {
-            string result = "[ ";
+            var result = new StringBuilder("[ ");
             foreach (JSONNode N in m_List)
             {
                 if (result.Length > 3)
-                    result += ", ";
-                result += "\n" + aPrefix + "   ";                
-                result += N.ToString(aPrefix+"   ");
+                    result.Append(", ");
+                result.Append("\n");
+                result.Append(aPrefix);
+                result.Append("   ");
+                result.Append(N.ToString(string.Format("{0}   ", aPrefix)));
             }
-            result += "\n" + aPrefix + "]";
-            return result;
+            result.Append("\n");
+            result.Append(aPrefix);
+            result.Append("]");
+            return result.ToString();
         }
         public override void Serialize (System.IO.BinaryWriter aWriter)
         {
@@ -784,28 +789,38 @@ namespace SimpleJSON
         }
         public override string ToString()
         {
-            string result = "{";
+            var result = new StringBuilder("{");
             foreach (KeyValuePair<string, JSONNode> N in m_Dict)
             {
                 if (result.Length > 2)
-                    result += ", ";
-                result += "\"" + Escape(N.Key) + "\":" + N.Value.ToString();
+                    result.Append(", ");
+                result.Append("\"");
+                result.Append(Escape(N.Key));
+                result.Append("\":");
+                result.Append(N.Value.ToString());
             }
-            result += "}";
-            return result;
+            result.Append("}");
+            return result.ToString();
         }
         public override string ToString(string aPrefix)
         {
-            string result = "{ ";
+            StringBuilder result = new StringBuilder("{ ");
             foreach (KeyValuePair<string, JSONNode> N in m_Dict)
             {
                 if (result.Length > 3)
-                    result += ", ";
-                result += "\n" + aPrefix + "   ";
-                result += "\"" + Escape(N.Key) + "\" : " + N.Value.ToString(aPrefix+"   ");
+                    result.Append(", ");
+                result.Append("\n");
+                result.Append(aPrefix);
+                result.Append("   ");
+                result.Append("\"");
+                result.Append(Escape(N.Key));
+                result.Append("\" : ");
+                result.Append(N.Value.ToString(string.Format("{0}   ", aPrefix)));
             }
-            result += "\n" + aPrefix + "}";
-            return result;
+            result.Append("\n");
+            result.Append(aPrefix);
+            result.Append("}");
+            return result.ToString();
         }
         public override void Serialize (System.IO.BinaryWriter aWriter)
         {
@@ -850,11 +865,17 @@ namespace SimpleJSON
  
         public override string ToString()
         {
-            return "\"" + Escape(m_Data) + "\"";
+            var result = new StringBuilder("\"");
+            result.Append(Escape(m_Data));
+            result.Append("\"");
+            return result.ToString();
         }
         public override string ToString(string aPrefix)
         {
-            return "\"" + Escape(m_Data) + "\"";
+            var result = new StringBuilder("\"");
+            result.Append(Escape(m_Data));
+            result.Append("\"");
+            return result.ToString();
         }
         public override void Serialize (System.IO.BinaryWriter aWriter)
         {
