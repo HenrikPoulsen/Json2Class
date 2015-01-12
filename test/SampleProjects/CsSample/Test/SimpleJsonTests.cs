@@ -1,4 +1,6 @@
-﻿using ExpectedObjects;
+﻿using System;
+using System.Diagnostics;
+using ExpectedObjects;
 using Generated;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SimpleJSON;
@@ -141,5 +143,27 @@ namespace Test
         }
 
         #endregion
+
+        [TestMethod]
+        public void PerformanceTest()
+        {
+            var sw = new Stopwatch();
+
+            sw.Start();
+
+            var remaining = 10000;
+
+            while (remaining != 0)
+            {
+                var json = Person.SimpleJsonFactory.ToJson(PersonTestSetup.LoadedTestPersonHasExpectedName.Person());
+                Person.SimpleJsonFactory.FromJson(json);
+                remaining--;
+            }
+
+            sw.Stop();
+
+            Console.WriteLine("Elapsed={0}", sw.Elapsed);
+
+        }
     }
 }

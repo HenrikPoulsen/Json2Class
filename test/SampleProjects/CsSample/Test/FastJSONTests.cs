@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using ExpectedObjects;
 using Generated;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -138,5 +139,27 @@ namespace Test
                 .ShouldMatch(loadedGlossary);
         }
         #endregion
+
+        [TestMethod]
+        public void PerformanceTest()
+        {
+            var sw = new Stopwatch();
+
+            sw.Start();
+
+            var remaining = 10000;
+
+            while (remaining != 0)
+            {
+                var json = Person.FastJSONFactory.ToJson(PersonTestSetup.LoadedTestPersonHasExpectedName.Person());
+                Person.FastJSONFactory.FromJson(json);
+                remaining--;
+            }
+
+            sw.Stop();
+
+            Console.WriteLine("Elapsed={0}",sw.Elapsed);
+           
+        }
     }
 }
