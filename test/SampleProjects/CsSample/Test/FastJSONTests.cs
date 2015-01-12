@@ -1,23 +1,25 @@
-﻿using ExpectedObjects;
+﻿using System;
+using System.Collections.Generic;
+using ExpectedObjects;
 using Generated;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json;
 using SimpleJSON;
 
 namespace Test
 {
     [TestClass]
-    public class SimpleJsonTests
+    public class FastJSONTests
     {
         #region Person Tests
-
         [TestMethod]
         public void LoadedTestPersonHasExpectedName()
         {
             // Assemble
-            string json = Person.SimpleJsonFactory.ToJson(PersonTestSetup.LoadedTestPersonHasExpectedName.Person());
+            var json = Person.FastJSONFactory.ToJson(PersonTestSetup.LoadedTestPersonHasExpectedName.Person());
 
             // Act
-            Person loadedPerson = Person.SimpleJsonFactory.FromJson(json);
+            var loadedPerson = Person.FastJSONFactory.FromJson(json);
 
             // Assert
             PersonTestSetup.LoadedTestPersonHasExpectedName.Person()
@@ -29,10 +31,10 @@ namespace Test
         public void LoadedTestPersonHasExpectedAge()
         {
             // Assemble
-            string jsonString = Person.SimpleJsonFactory.ToJson(PersonTestSetup.LoadedTestPersonHasExpectedAge.Person());
+            var jsonString = Person.FastJSONFactory.ToJson(PersonTestSetup.LoadedTestPersonHasExpectedAge.Person());
 
             // Act
-            Person loadedPerson = Person.SimpleJsonFactory.FromJson(jsonString);
+            var loadedPerson = Person.FastJSONFactory.FromJson(jsonString);
 
             // Assert
             PersonTestSetup.LoadedTestPersonHasExpectedAge.Person()
@@ -44,10 +46,10 @@ namespace Test
         public void LoadedTestPersonHasExpectedCountry()
         {
             // Assemble
-            string json = Person.SimpleJsonFactory.ToJson(PersonTestSetup.LoadedTestPersonHasExpectedCountry.Person());
+            var json = Person.FastJSONFactory.ToJson(PersonTestSetup.LoadedTestPersonHasExpectedCountry.Person());
 
             // Act
-            Person loadedPerson = Person.SimpleJsonFactory.FromJson(json);
+            var loadedPerson = Person.FastJSONFactory.FromJson(json);
 
             // Assert
             PersonTestSetup.LoadedTestPersonHasExpectedCountry.Person().ToExpectedObject().ShouldMatch(loadedPerson);
@@ -58,10 +60,10 @@ namespace Test
         {
             // Assemble
 
-            string json = Person.SimpleJsonFactory.ToJson(PersonTestSetup.LoadedTestPersonHasExpectedFamily.Person());
+            var json = Person.FastJSONFactory.ToJson(PersonTestSetup.LoadedTestPersonHasExpectedFamily.Person());
 
             // Act
-            Person loadedPerson = Person.SimpleJsonFactory.FromJson(json);
+            var loadedPerson = Person.FastJSONFactory.FromJson(json);
 
             // Assert
             PersonTestSetup.LoadedTestPersonHasExpectedFamily.Person().ToExpectedObject().ShouldMatch(loadedPerson);
@@ -70,14 +72,14 @@ namespace Test
         [TestMethod]
         public void LoadedTestPersonWithMissingValues()
         {
-            string jsonString =
-                Person.SimpleJsonFactory.ToJson(PersonTestSetup.LoadedTestPersonWithMissingValues.Person());
-            JSONNode jsonObject = JSON.Parse(jsonString);
+            var jsonString = Person.FastJSONFactory.ToJson(PersonTestSetup.LoadedTestPersonWithMissingValues.Person());
+            var jsonObject = (Dictionary<string, object>)fastJSON.JSON.Parse(jsonString);
             jsonObject.Remove("age");
             jsonObject.Remove("family");
+            jsonString = fastJSON.JSON.ToJSON(jsonObject);
 
             // Act
-            Person loadedGlossary = Person.SimpleJsonFactory.FromJson(jsonObject.ToString());
+            var loadedGlossary = Person.FastJSONFactory.FromJson(jsonString);
 
             // Assert
             PersonTestSetup.LoadedTestPersonWithMissingValues.Person()
@@ -88,31 +90,28 @@ namespace Test
         [TestMethod]
         public void LoadedTestPersonHasNullFamily()
         {
-            Person person = PersonTestSetup.LoadedTestPersonHasNullFamily.Person();
+            var person = PersonTestSetup.LoadedTestPersonHasNullFamily.Person();
             person.Family = null;
-            string json = Person.SimpleJsonFactory.ToJson(person);
+            var json = Person.FastJSONFactory.ToJson(person);
 
             // Act
-            Person loadedPerson = Person.SimpleJsonFactory.FromJson(json);
+            var loadedPerson = Person.FastJSONFactory.FromJson(json);
 
             // Assert
             PersonTestSetup.LoadedTestPersonHasNullFamily.Person()
                 .ToExpectedObject()
                 .ShouldMatch(loadedPerson);
         }
-
         #endregion
 
         #region Glossary Tests
-
         [TestMethod]
         public void LoadedTestGlossaryHasExpectedEmptyValues()
         {
-            string json =
-                Glossary.SimpleJsonFactory.ToJson(GlossaryTestSetup.LoadedTestGlossaryHasExpectedEmptyValues.Glossary());
+            var json = Glossary.FastJSONFactory.ToJson(GlossaryTestSetup.LoadedTestGlossaryHasExpectedEmptyValues.Glossary());
 
             // Act
-            Glossary loadedGlossary = Glossary.SimpleJsonFactory.FromJson(json);
+            var loadedGlossary = Glossary.FastJSONFactory.FromJson(json);
 
             // Assert
             GlossaryTestSetup.LoadedTestGlossaryHasExpectedEmptyValues.Glossary()
@@ -123,23 +122,21 @@ namespace Test
         [TestMethod]
         public void LoadedTestGlossaryWithMissingValues()
         {
-            string jsonString =
-                Glossary.SimpleJsonFactory.ToJson(GlossaryTestSetup.LoadedTestGlossaryWithMissingValues.Glossary());
-            JSONNode jsonObject = JSON.Parse(jsonString);
+            var jsonString = Glossary.FastJSONFactory.ToJson(GlossaryTestSetup.LoadedTestGlossaryWithMissingValues.Glossary());
+            var jsonObject = JSON.Parse(jsonString);
             jsonObject.Remove("title");
             jsonObject["glossDiv"].Remove("title");
             jsonObject["glossDiv"]["glossList"]["glossEntry"].Remove("id");
             jsonObject["glossDiv"]["glossList"]["glossEntry"].Remove("float");
 
             // Act
-            Glossary loadedGlossary = Glossary.SimpleJsonFactory.FromJson(jsonObject.ToString());
+            var loadedGlossary = Glossary.FastJSONFactory.FromJson(jsonObject.ToString());
 
             // Assert
             GlossaryTestSetup.LoadedTestGlossaryWithMissingValues.Glossary()
                 .ToExpectedObject()
                 .ShouldMatch(loadedGlossary);
         }
-
         #endregion
     }
 }

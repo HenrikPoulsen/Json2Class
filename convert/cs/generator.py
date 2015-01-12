@@ -70,7 +70,7 @@ def _capitalize(obj):
     """
     if obj.__len__() < 2:
         return obj
-    if obj == "string" or obj == "float" or obj == "int":
+    if obj == "string" or obj == "float" or obj == "long":
         return obj
     return obj[0].upper() + obj[1:]
 
@@ -83,8 +83,10 @@ def _get_type_name(member):
     :param obj:
     :return:
     """
-    if member.type == ParsedObjectType.String or member.type == ParsedObjectType.Int or member.type == ParsedObjectType.Float or member.type == ParsedObjectType.Bool:
+    if member.type == ParsedObjectType.String or member.type == ParsedObjectType.Float or member.type == ParsedObjectType.Bool:
         return member.type.name.lower()
+    elif member.type == ParsedObjectType.Int:
+        return "long"
     elif member.type == ParsedObjectType.Array:
         return "List<{0}>".format(_get_type_name(member.data[0]))
     else:

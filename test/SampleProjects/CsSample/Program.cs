@@ -11,17 +11,17 @@ namespace CsSample
     {
         static void Main(string[] args)
         {
-            var myPerson = Person.SimpleJsonFactory.FromJson(File.ReadAllText("..\\..\\..\\..\\jsonSamples\\Person.json"));
+            var myPerson = Person.FastJSONFactory.FromJson(File.ReadAllText("..\\..\\..\\..\\jsonSamples\\Person.json"));
             Console.WriteLine(myPerson.Family.Count);
 
             myPerson.Family.Add(new Person());
 
-            var outJson = Person.SimpleJsonFactory.ToJson(myPerson);
+            var outJson = Person.FastJSONFactory.ToJson(myPerson);
             Console.WriteLine(outJson.ToString());
 
             var listSample = new ListSample();
             listSample.ObjectList.Add(new ObjectList{ Name = "Hello"});
-            outJson = ListSample.SimpleJsonFactory.ToJson(listSample);
+            outJson = ListSample.FastJSONFactory.ToJson(listSample);
             Console.WriteLine(outJson.ToString());
         }
     }
