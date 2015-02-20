@@ -371,7 +371,7 @@ namespace SimpleJSON
                                 ctx.Add(TokenName, stack.Peek());
                         }
                         TokenName = "";
-                        Token.Clear();
+                        Token = new StringBuilder();
                         ctx = stack.Peek();
                         break;
 
@@ -393,7 +393,7 @@ namespace SimpleJSON
                                 ctx.Add(TokenName, stack.Peek());
                         }
                         TokenName = "";
-                        Token.Clear();
+                        Token = new StringBuilder();
                         ctx = stack.Peek();
                         break;
 
@@ -421,7 +421,7 @@ namespace SimpleJSON
                             TokenIsString = false;
                         }
                         TokenName = "";
-                        Token.Clear();
+                        Token = new StringBuilder();
                         if (stack.Count > 0)
                             ctx = stack.Peek();
                         break;
@@ -433,7 +433,7 @@ namespace SimpleJSON
                             break;
                         }
                         TokenName = Token.ToString();
-                        Token.Clear();
+                        Token = new StringBuilder();
                         TokenIsString = false;
                         break;
 
@@ -461,7 +461,7 @@ namespace SimpleJSON
                             TokenIsString = false;
                         }
                         TokenName = "";
-                        Token.Clear();
+                        Token = new StringBuilder();
                         TokenIsString = false;
                         break;
 
@@ -1091,6 +1091,13 @@ namespace SimpleJSON
 
         public override string ToString()
         {
+            if(Tag == JSONBinaryTag.BoolValue ||
+               Tag == JSONBinaryTag.IntValue ||
+               Tag == JSONBinaryTag.FloatValue ||
+               Tag == JSONBinaryTag.DoubleValue)
+            {
+                return Escape(m_Data);
+            }
             var result = new StringBuilder("\"");
             result.Append(Escape(m_Data));
             result.Append("\"");
@@ -1099,6 +1106,13 @@ namespace SimpleJSON
 
         public override string ToString(string aPrefix)
         {
+            if (Tag == JSONBinaryTag.BoolValue ||
+                Tag == JSONBinaryTag.IntValue ||
+                Tag == JSONBinaryTag.FloatValue ||
+                Tag == JSONBinaryTag.DoubleValue)
+            {
+                return Escape(m_Data);
+            }
             var result = new StringBuilder("\"");
             result.Append(Escape(m_Data));
             result.Append("\"");
