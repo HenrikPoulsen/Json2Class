@@ -19,7 +19,7 @@
  * 
  * Modified by oPless, 2014-09-21 to round-trip properly
  * 
- * Modified by Henrik Poulsen, 2015-01-12, improved performance by using StringBuilder.
+ * Modified by Henrik Poulsen, 2015-01-12, improved performance by using StringBuilder and added support for long.
  *
  * Features / attributes:
  * - provides strongly typed node classes and lists / dictionaries
@@ -29,7 +29,7 @@
  * - values and names are not restricted to quoted strings. They simply add up and are trimmed.
  * - There are only 3 types: arrays(JSONArray), objects(JSONClass) and values(JSONData)
  * - provides "casting" properties to easily convert to / from those types:
- *   int / float / double / bool
+ *   int / float / double / bool / long
  * - provides a common interface for each node so no explicit casting is required.
  * - the parser try to avoid errors, but if malformed JSON is parsed the result is undefined
  * 
@@ -64,6 +64,7 @@ namespace SimpleJSON
         DoubleValue = 5,
         BoolValue = 6,
         FloatValue = 7,
+        LongValue = 8
     }
 
     public abstract class JSONNode
@@ -163,6 +164,22 @@ namespace SimpleJSON
             {
                 Value = value.ToString();
                 Tag = JSONBinaryTag.IntValue;
+            }
+        }
+
+        public virtual long AsLong
+        {
+            get
+            {
+                long v = 0;
+                if (long.TryParse(Value, out v))
+                    return v;
+                return 0;
+            }
+            set
+            {
+                Value = value.ToString();
+                Tag = JSONBinaryTag.LongValue;
             }
         }
 
@@ -302,11 +319,17 @@ namespace SimpleJSON
         {
             bool flag = false;
             int integer = 0;
+            long longInteger = 0L;
             double real = 0;
 
             if (int.TryParse(token, out integer))
             {
                 return new JSONData(integer);
+            }
+
+            if (long.TryParse(token, out longInteger))
+            {
+                return new JSONData(longInteger);
             }
 
             if (double.TryParse(token, out real))
@@ -658,6 +681,10 @@ namespace SimpleJSON
                 case JSONBinaryTag.FloatValue:
                 {
                     return new JSONData(aReader.ReadSingle());
+                }
+                case JSONBinaryTag.LongValue:
+                {
+                    return new JSONData(aReader.ReadInt64());
                 }
 
                 default:
@@ -1089,10 +1116,16 @@ namespace SimpleJSON
             AsInt = aData;
         }
 
+        public JSONData(long aData)
+        {
+            AsLong = aData;
+        }
+
         public override string ToString()
         {
             if(Tag == JSONBinaryTag.BoolValue ||
                Tag == JSONBinaryTag.IntValue ||
+               Tag == JSONBinaryTag.LongValue ||
                Tag == JSONBinaryTag.FloatValue ||
                Tag == JSONBinaryTag.DoubleValue)
             {
@@ -1108,6 +1141,7 @@ namespace SimpleJSON
         {
             if (Tag == JSONBinaryTag.BoolValue ||
                 Tag == JSONBinaryTag.IntValue ||
+                Tag == JSONBinaryTag.LongValue ||
                 Tag == JSONBinaryTag.FloatValue ||
                 Tag == JSONBinaryTag.DoubleValue)
             {
@@ -1126,6 +1160,7 @@ namespace SimpleJSON
                 case JSONBinaryTag.DoubleValue:
                 case JSONBinaryTag.FloatValue:
                 case JSONBinaryTag.IntValue:
+                case JSONBinaryTag.LongValue:
                 case JSONBinaryTag.BoolValue:
                     return m_Data;
                 case JSONBinaryTag.Value:
@@ -1147,6 +1182,13 @@ namespace SimpleJSON
             {
                 aWriter.Write((byte) JSONBinaryTag.IntValue);
                 aWriter.Write(AsInt);
+                return;
+            }
+            tmp.AsLong = AsLong;
+            if (tmp.m_Data == this.m_Data)
+            {
+                aWriter.Write((byte)JSONBinaryTag.LongValue);
+                aWriter.Write(AsLong);
                 return;
             }
             tmp.AsFloat = AsFloat;
@@ -1284,6 +1326,21 @@ namespace SimpleJSON
         }
 
         public override int AsInt
+        {
+            get
+            {
+                JSONData tmp = new JSONData(0);
+                Set(tmp);
+                return 0;
+            }
+            set
+            {
+                JSONData tmp = new JSONData(value);
+                Set(tmp);
+            }
+        }
+
+        public override long AsLong
         {
             get
             {
