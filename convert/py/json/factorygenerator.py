@@ -91,9 +91,9 @@ def _member_save_list(member):
 
     child = member.data[0]
     if child.type == ParsedObjectType.Object:
-        result += "                    d['family'].append({0}.JsonFactory.JsonEncoder().default(item))\n".format(_capitalize(child.name))
+        result += "                    d['{0}'].append({1}.JsonFactory.JsonEncoder().default(item))\n".format(member.name, _capitalize(child.name))
     else:
-        result += "                    d['family'].append(item)\n"
+        result += "                    d['{0}'].append(item)\n".format(member.name)
     result += "\n"
     return result
 
