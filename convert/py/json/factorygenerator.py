@@ -26,7 +26,7 @@ class FactoryGenerator(BaseFactoryGenerator):
     def _generate_to_json(self):
         result = ("        @staticmethod\n"
                   "        def to_json(self):\n"
-                  "            \"\"\":rtype: dict\"\"\"\n"
+                  "            \"\"\":rtype: str\"\"\"\n"
                   "            return {0}.JsonFactory.JsonEncoder().encode(self)\n\n"
                   "        class JsonEncoder(json.JSONEncoder):\n"
                   "            def default(self, obj):\n"
@@ -46,7 +46,9 @@ class FactoryGenerator(BaseFactoryGenerator):
         self.data = data
         self.namespace = namespace
 
-        serializers = "\n    class JsonFactory():\n"
+        serializers = ("    class JsonFactory():\n"
+                       "        def __init__(self):\n"
+                       "            pass\n\n")
         serializers += self._generate_to_json()
         serializers += self._generate_from_json()
         return serializers

@@ -35,7 +35,6 @@ class Generator(BaseGenerator):
         result = ""
         for member in self.data.data:
             result += _generate_getter_setter(member)
-        result += "\n"
         return result
 
     def _generate_header(self):
@@ -91,7 +90,7 @@ def _generate_getter_setter(member):
     result = ("    @property\n"
               "    def {0}(self):\n"
               "        \"\"\":rtype: {1}\"\"\"\n"
-              "        return self._{0}\n"
+              "        return self._{0}\n\n"
               "    @{0}.setter\n"
               "    def {0}(self, value):\n"
               "        \"\"\":type value: {1}\n"
