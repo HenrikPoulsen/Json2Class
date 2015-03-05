@@ -57,11 +57,11 @@ def _generate_class(namespace, generators, parsed_object):
         print "ParsedObject {0} is marked with skip so wont generate a file for this one".format(parsed_object.name)
         return []
 
-    print "Generating {0}.{1}".format(namespace, parsed_object.name)
-
     content = []
 
-    if parsed_object.type == ParsedObjectType.Object or parsed_object.type == ParsedObjectType.Array:
+    if parsed_object.type == ParsedObjectType.Object or \
+            (parsed_object.type == ParsedObjectType.Array and _get_bottom_child(parsed_object).type == ParsedObjectType.Array):
+        print "Generating {0}.{1}".format(namespace, parsed_object.name)
         for obj in parsed_object.data:
             if obj.type == ParsedObjectType.Object:
                 content.extend(_generate_class(namespace, generators, obj))
@@ -76,6 +76,19 @@ def _generate_class(namespace, generators, parsed_object):
                             "module": generator.__module__})
 
     return content
+
+
+def _get_bottom_child(parsed_object):
+    child = None
+    for obj in parsed_object.data:
+        if obj.type == ParsedObjectType.Array:
+            child = _get_bottom_child(obj)
+            if child is not None and child.type != ParsedObjectType.Array:
+                break
+        else:
+            child = obj
+            break
+    return child
 
 
 def parse(json_object):
