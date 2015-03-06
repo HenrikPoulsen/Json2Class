@@ -1,6 +1,8 @@
 from testfixtures.comparison import register
 from Generated.person import Person
 from testfixtures import compare
+from Generated.gender import Gender
+
 
 def compare_person(x, y, context):
     """
@@ -48,12 +50,14 @@ class PersonTestSetup:
             person.name = "Empty"
             person.age = 10
             person.country = "Whatever"
+            person.gender = Gender.Male
             person.family = []
 
             temp_person = Person()
             temp_person.name = "Family"
             temp_person.age = -1
             temp_person.country = "Random"
+            temp_person.gender = Gender.Female
             person.family.append(temp_person)
             person.family.append(Person())
             return person

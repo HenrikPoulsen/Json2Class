@@ -26,6 +26,8 @@ class Generator(BaseGenerator):
                     constructor += "        self._{0} = None\n".format(_camel_case(member.name))
                 elif member.type == ParsedObjectType.Bool:
                     constructor += "        self._{0} = False\n".format(_camel_case(member.name))
+                elif member.type == ParsedObjectType.Enum:
+                    constructor += "        self._{0} = {1}(0)\n".format(_camel_case(member.name), _capitalize(member.name))
         constructor += "\n"
 
         return constructor
@@ -53,7 +55,7 @@ class Generator(BaseGenerator):
             if _capitalize(member.name) == _capitalize(self.data.name):
                 # if the member is the same class as the current class then we shouldn't import it
                 continue
-            if member.type == ParsedObjectType.Object:
+            if member.type == ParsedObjectType.Object or member.type == ParsedObjectType.Enum:
                 result += "from {0} import {1}\n".format(member.name.lower(), _capitalize(member.name))
             elif member.type == ParsedObjectType.Array:
                 child = member.data[0]
@@ -113,10 +115,11 @@ def _capitalize(obj):
         return obj
     return obj[0].upper() + obj[1:]
 
+
 def _get_type_name(obj):
     if obj.type == ParsedObjectType.String:
         return "str"
-    if obj.type == ParsedObjectType.Object:
+    if obj.type == ParsedObjectType.Object or obj.type == ParsedObjectType.Enum:
         return _capitalize(obj.name)
     if obj.type == ParsedObjectType.Array:
         return "list of [{0}]".format(_get_type_name(obj.data[0]))

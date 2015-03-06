@@ -67,9 +67,14 @@ def _member_load(member):
 
         if child.type == ParsedObjectType.Object:
             result += "                    obj._{0}.append({1}.JsonFactory.from_json(item))\n".format(_camel_case(member.name), _capitalize(child.name))
+        elif child.type == ParsedObjectType.Enum:
+            result += "                    obj._{0}.append({1}(item))\n".format(_camel_case(member.name), _capitalize(member.name))
         else:
             result += "                    obj._{0}.append(item)\n".format(_camel_case(member.name))
         return result
+    elif member.type == ParsedObjectType.Enum:
+        return ("            if \"{2}\" in json_obj:\n"
+                "                obj._{0} = {3}({1})\n").format(_camel_case(member.name), json_container_string, member.name, _capitalize(member.name))
     else:
         return ("            if \"{2}\" in json_obj:\n"
                 "                obj._{0} = {1}\n").format(_camel_case(member.name), json_container_string, member.name)
@@ -80,6 +85,8 @@ def _member_save(member):
         return "                    '{0}': {2}.JsonFactory.JsonEncoder().default(obj.{1}),\n".format(member.name, _camel_case(member.name), _capitalize(member.name))
     if member.type == ParsedObjectType.Array:
         return "                    '{0}': [],\n".format(member.name)
+    if member.type == ParsedObjectType.Enum:
+        return "                    '{0}': obj.{1}.value,\n".format(member.name, _camel_case(member.name))
     return "                    '{0}': obj.{1},\n".format(member.name, _camel_case(member.name))
 
 

@@ -3,6 +3,12 @@
   "age": 32,
   "country": "Sweden",
   "isHuman": true,
+  "gender": {
+    "@type": "enum",
+    "unspecified": 0,
+    "male": 1,
+    "female": 2
+  },
   "family": [{
                 "@name": "Person",
                 "@skip_generate": "",
@@ -10,6 +16,7 @@
                 "age": 57,
                 "country": "Sweden",
 				"isHuman": true,
+                "gender": { "@type": "enum", "@skipGenerate": ""},
                 "family": []
             },
             {
@@ -19,6 +26,7 @@
                 "age": 65,
                 "country": "Sweden",
 				"isHuman": false,
+                "gender": { "@type": "enum", "@skipGenerate": ""},
                 "family": []
             }]
 }
