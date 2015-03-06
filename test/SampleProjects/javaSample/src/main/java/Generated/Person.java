@@ -15,6 +15,7 @@ public class Person{
     public Person() {
         name = "";
         country = "";
+        gender = new Gender(0);
         family = new ArrayList<Person>();
     }
     public String name;
@@ -38,7 +39,7 @@ public class Person{
             json.put("age", obj.age);
             json.put("country", obj.country);
             json.put("isHuman", obj.isHuman);
-            json.put("gender", obj.gender);
+            json.put("gender", obj.gender.getValue());
 
             if(obj.family != null) {
                 tempArray = new JSONArray();
@@ -72,7 +73,7 @@ public class Person{
                 obj.isHuman = (Boolean)jsonObject.get("isHuman");
             }
             if(jsonObject.containsKey("gender")) {
-                obj.gender = (Gender)jsonObject.get("gender");
+                obj.gender = new Gender((Long)jsonObject.get("gender"));
             }
             if(jsonObject.containsKey("family")) {
                 obj.family = new ArrayList<Person>();

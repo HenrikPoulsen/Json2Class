@@ -1,11 +1,8 @@
-import Generated.GlossDef;
 import Generated.Glossary;
 import Generated.Person;
 import junit.framework.TestCase;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
-
-import java.util.ArrayList;
 
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
