@@ -39,7 +39,10 @@ class FactoryGenerator(BaseFactoryGenerator):
             else:
                 if member.type == ParsedObjectType.String:
                     serializer += "                if (obj.{0} != null)\n    ".format(_capitalize(member.name))
-                serializer += "                jsonObject[\"{0}\"] = new JSONData(obj.{1});\n".format(member.name, _capitalize(member.name))
+                casting = ""
+                if member.type == ParsedObjectType.Enum:
+                    casting = "(int)"
+                serializer += "                jsonObject[\"{0}\"] = new JSONData({2}obj.{1});\n".format(member.name, _capitalize(member.name), casting)
 
         serializer += ("                return jsonObject;\n"
                        "            }\n\n")
@@ -100,7 +103,10 @@ def _member_initialization(member, namespace):
     elif member.type == ParsedObjectType.String:
         return "                var {0} = {1}.Value ?? \"\";\n".format(member.name, _get_member_initialization_string(member, json_container_string))
     else:
-        return "                var {0} = {1};\n".format(member.name, _get_member_initialization_string(member, json_container_string))
+        casting = ""
+        if member.type == ParsedObjectType.Enum:
+            casting = "({0})".format(_get_type_name(member))
+        return "                var {0} = {2}{1};\n".format(member.name, _get_member_initialization_string(member, json_container_string), casting)
         return result
 
 
@@ -121,7 +127,7 @@ def _json_load_as(member):
     """
     if member.type == ParsedObjectType.Float:
         return ".AsFloat"
-    elif member.type == ParsedObjectType.Int:
+    elif member.type == ParsedObjectType.Int or member.type == ParsedObjectType.Enum:
         return ".AsInt"
     elif member.type == ParsedObjectType.Bool:
         return ".AsBool"
@@ -189,7 +195,7 @@ def _json_save_as(member):
     """
     if member.type == ParsedObjectType.Float:
         return ".AsFloat"
-    elif member.type == ParsedObjectType.Int:
+    elif member.type == ParsedObjectType.Int or member.type == ParsedObjectType.Enum:
         return ".AsInt"
     elif member.type == ParsedObjectType.Bool:
         return ".AsBool"

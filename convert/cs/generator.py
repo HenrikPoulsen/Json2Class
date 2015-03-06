@@ -5,6 +5,8 @@ import datetime
 
 class Generator(BaseGenerator):
     def _generate_default_constructor(self):
+        if self.data.type == ParsedObjectType.Enum:
+            return ""
         constructor = ("        public {0}()\n"
                        "        {{\n").format(_capitalize(self.data.name))
 
@@ -19,7 +21,7 @@ class Generator(BaseGenerator):
     def _generate_member_access(self):
         properties = ""
         for member in self.data.data:
-            properties += _member_declaration(member)
+            properties += self._member_declaration(member)
         return properties
 
     def file_name(self, name):
@@ -33,7 +35,14 @@ class Generator(BaseGenerator):
                 break
 
         date_str = "Date: {0}".format(datetime.date.today())
+        if BaseGenerator.skip_date_comment:
+            date_str = ""
         date_str = date_str.ljust(80)
+
+        object_type_str = "class"
+        if self.data.type == ParsedObjectType.Enum:
+            object_type_str = "enum"
+
         for factory in self.factories:
             result += factory.generate_import()
         result += ("\n/////////////////////////////////////////////////////////////////////////////////////\n"
@@ -43,13 +52,18 @@ class Generator(BaseGenerator):
                    "/////////////////////////////////////////////////////////////////////////////////////\n\n"
                    "namespace {0}\n"
                    "{{\n"
-                   "    public class {1}\n"
-                   "    {{\n").format(self.namespace, _capitalize(self.data.name), date_str)
+                   "    public {3} {1}\n"
+                   "    {{\n").format(self.namespace, _capitalize(self.data.name), date_str, object_type_str)
         return result
 
     def _generate_footer(self):
         return ("    }\n"
                 "}\n")
+
+    def _member_declaration(self, member):
+        if self.data.type == ParsedObjectType.Enum:
+            return "        {0} = {1},\n".format(_capitalize(member.name), member.data)
+        return "        public {0} {1} {{get; set;}}\n".format(_get_type_name(member), _capitalize(member.name))
 
 
 def _get_member_initialization_string(member, json_container):
@@ -58,9 +72,6 @@ def _get_member_initialization_string(member, json_container):
     if member.type == ParsedObjectType.Array:
         return "new {0}".format( _get_type_name(member))
 
-
-def _member_declaration(member):
-    return "        public {0} {1} {{get; set;}}\n".format(_get_type_name(member), _capitalize(member.name))
 
 def _capitalize(obj):
     """

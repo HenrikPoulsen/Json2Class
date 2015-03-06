@@ -1,3 +1,4 @@
+from convert.base.parsedobject import ParsedObjectType
 from factorygenerator import BaseFactoryGenerator
 
 
@@ -6,6 +7,8 @@ class BaseGenerator():
     This is the generator base class which is basically just a set of methods that should be implemented for the
     different languages
     """
+    skip_date_comment = False
+
     def __init__(self, factories):
         """
 
@@ -86,6 +89,9 @@ class BaseGenerator():
         :rtype: string
         :return:
         """
+        # Enums don't need factories
+        if self.data.type == ParsedObjectType.Enum:
+            return ""
         result = ""
         for factory in self.factories:
             result += factory.generate(self.data, self.namespace)
