@@ -27,9 +27,11 @@ class GlossList(object):
             pass
 
         @staticmethod
-        def to_json(self):
-            """:rtype: str"""
-            return GlossList.JsonFactory.JsonEncoder().encode(self)
+        def to_json(obj):
+            """
+            Takes an GlossList or a list of GlossList and returns a json string representation of itn            :rtype: str
+            """
+            return GlossList.JsonFactory.JsonEncoder().encode(obj)
 
         class JsonEncoder(json.JSONEncoder):
             def default(self, obj):
@@ -41,12 +43,24 @@ class GlossList(object):
                 return d
 
         @staticmethod
+        def from_json_array(json_array):
+            """
+            :type json_array: list
+            :rtype: list of [GlossList]
+            """
+            result = []
+            for obj in json_array:
+                result.append(GlossList.JsonFactory.from_json(obj))
+            return result
+
+        @staticmethod
         def from_json(json_obj):
             """:type json_obj: dict
                :rtype: GlossList"""
             if json_obj is None:
                 return None
             obj = GlossList()
+
             if "glossEntry" in json_obj:
                 obj._gloss_entry = GlossEntry.JsonFactory.from_json(json_obj["glossEntry"])
             return obj

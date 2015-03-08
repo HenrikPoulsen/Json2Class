@@ -39,9 +39,11 @@ class GlossDiv(object):
             pass
 
         @staticmethod
-        def to_json(self):
-            """:rtype: str"""
-            return GlossDiv.JsonFactory.JsonEncoder().encode(self)
+        def to_json(obj):
+            """
+            Takes an GlossDiv or a list of GlossDiv and returns a json string representation of itn            :rtype: str
+            """
+            return GlossDiv.JsonFactory.JsonEncoder().encode(obj)
 
         class JsonEncoder(json.JSONEncoder):
             def default(self, obj):
@@ -54,12 +56,24 @@ class GlossDiv(object):
                 return d
 
         @staticmethod
+        def from_json_array(json_array):
+            """
+            :type json_array: list
+            :rtype: list of [GlossDiv]
+            """
+            result = []
+            for obj in json_array:
+                result.append(GlossDiv.JsonFactory.from_json(obj))
+            return result
+
+        @staticmethod
         def from_json(json_obj):
             """:type json_obj: dict
                :rtype: GlossDiv"""
             if json_obj is None:
                 return None
             obj = GlossDiv()
+
             if "title" in json_obj:
                 obj._title = json_obj["title"]
             if "glossList" in json_obj:

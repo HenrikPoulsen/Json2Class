@@ -63,9 +63,11 @@ class ListSample(object):
             pass
 
         @staticmethod
-        def to_json(self):
-            """:rtype: str"""
-            return ListSample.JsonFactory.JsonEncoder().encode(self)
+        def to_json(obj):
+            """
+            Takes an ListSample or a list of ListSample and returns a json string representation of itn            :rtype: str
+            """
+            return ListSample.JsonFactory.JsonEncoder().encode(obj)
 
         class JsonEncoder(json.JSONEncoder):
             def default(self, obj):
@@ -92,12 +94,24 @@ class ListSample(object):
                 return d
 
         @staticmethod
+        def from_json_array(json_array):
+            """
+            :type json_array: list
+            :rtype: list of [ListSample]
+            """
+            result = []
+            for obj in json_array:
+                result.append(ListSample.JsonFactory.from_json(obj))
+            return result
+
+        @staticmethod
         def from_json(json_obj):
             """:type json_obj: dict
                :rtype: ListSample"""
             if json_obj is None:
                 return None
             obj = ListSample()
+
             if "intList" in json_obj:
                 obj._int_list = []
                 for item in json_obj["intList"]:

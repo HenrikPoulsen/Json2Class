@@ -26,9 +26,11 @@ class ObjectList(object):
             pass
 
         @staticmethod
-        def to_json(self):
-            """:rtype: str"""
-            return ObjectList.JsonFactory.JsonEncoder().encode(self)
+        def to_json(obj):
+            """
+            Takes an ObjectList or a list of ObjectList and returns a json string representation of itn            :rtype: str
+            """
+            return ObjectList.JsonFactory.JsonEncoder().encode(obj)
 
         class JsonEncoder(json.JSONEncoder):
             def default(self, obj):
@@ -40,12 +42,24 @@ class ObjectList(object):
                 return d
 
         @staticmethod
+        def from_json_array(json_array):
+            """
+            :type json_array: list
+            :rtype: list of [ObjectList]
+            """
+            result = []
+            for obj in json_array:
+                result.append(ObjectList.JsonFactory.from_json(obj))
+            return result
+
+        @staticmethod
         def from_json(json_obj):
             """:type json_obj: dict
                :rtype: ObjectList"""
             if json_obj is None:
                 return None
             obj = ObjectList()
+
             if "name" in json_obj:
                 obj._name = json_obj["name"]
             return obj

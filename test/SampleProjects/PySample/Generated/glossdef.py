@@ -38,9 +38,11 @@ class GlossDef(object):
             pass
 
         @staticmethod
-        def to_json(self):
-            """:rtype: str"""
-            return GlossDef.JsonFactory.JsonEncoder().encode(self)
+        def to_json(obj):
+            """
+            Takes an GlossDef or a list of GlossDef and returns a json string representation of itn            :rtype: str
+            """
+            return GlossDef.JsonFactory.JsonEncoder().encode(obj)
 
         class JsonEncoder(json.JSONEncoder):
             def default(self, obj):
@@ -56,12 +58,24 @@ class GlossDef(object):
                 return d
 
         @staticmethod
+        def from_json_array(json_array):
+            """
+            :type json_array: list
+            :rtype: list of [GlossDef]
+            """
+            result = []
+            for obj in json_array:
+                result.append(GlossDef.JsonFactory.from_json(obj))
+            return result
+
+        @staticmethod
         def from_json(json_obj):
             """:type json_obj: dict
                :rtype: GlossDef"""
             if json_obj is None:
                 return None
             obj = GlossDef()
+
             if "para" in json_obj:
                 obj._para = json_obj["para"]
             if "glossSeeAlso" in json_obj:

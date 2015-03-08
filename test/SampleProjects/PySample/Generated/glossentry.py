@@ -111,9 +111,11 @@ class GlossEntry(object):
             pass
 
         @staticmethod
-        def to_json(self):
-            """:rtype: str"""
-            return GlossEntry.JsonFactory.JsonEncoder().encode(self)
+        def to_json(obj):
+            """
+            Takes an GlossEntry or a list of GlossEntry and returns a json string representation of itn            :rtype: str
+            """
+            return GlossEntry.JsonFactory.JsonEncoder().encode(obj)
 
         class JsonEncoder(json.JSONEncoder):
             def default(self, obj):
@@ -132,12 +134,24 @@ class GlossEntry(object):
                 return d
 
         @staticmethod
+        def from_json_array(json_array):
+            """
+            :type json_array: list
+            :rtype: list of [GlossEntry]
+            """
+            result = []
+            for obj in json_array:
+                result.append(GlossEntry.JsonFactory.from_json(obj))
+            return result
+
+        @staticmethod
         def from_json(json_obj):
             """:type json_obj: dict
                :rtype: GlossEntry"""
             if json_obj is None:
                 return None
             obj = GlossEntry()
+
             if "id" in json_obj:
                 obj._id = json_obj["id"]
             if "testFloat" in json_obj:

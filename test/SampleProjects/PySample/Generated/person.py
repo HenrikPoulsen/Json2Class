@@ -74,9 +74,11 @@ class Person(object):
             pass
 
         @staticmethod
-        def to_json(self):
-            """:rtype: str"""
-            return Person.JsonFactory.JsonEncoder().encode(self)
+        def to_json(obj):
+            """
+            Takes an Person or a list of Person and returns a json string representation of itn            :rtype: str
+            """
+            return Person.JsonFactory.JsonEncoder().encode(obj)
 
         class JsonEncoder(json.JSONEncoder):
             def default(self, obj):
@@ -95,12 +97,24 @@ class Person(object):
                 return d
 
         @staticmethod
+        def from_json_array(json_array):
+            """
+            :type json_array: list
+            :rtype: list of [Person]
+            """
+            result = []
+            for obj in json_array:
+                result.append(Person.JsonFactory.from_json(obj))
+            return result
+
+        @staticmethod
         def from_json(json_obj):
             """:type json_obj: dict
                :rtype: Person"""
             if json_obj is None:
                 return None
             obj = Person()
+
             if "name" in json_obj:
                 obj._name = json_obj["name"]
             if "age" in json_obj:

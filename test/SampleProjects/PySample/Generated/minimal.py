@@ -15,9 +15,11 @@ class Minimal(object):
             pass
 
         @staticmethod
-        def to_json(self):
-            """:rtype: str"""
-            return Minimal.JsonFactory.JsonEncoder().encode(self)
+        def to_json(obj):
+            """
+            Takes an Minimal or a list of Minimal and returns a json string representation of itn            :rtype: str
+            """
+            return Minimal.JsonFactory.JsonEncoder().encode(obj)
 
         class JsonEncoder(json.JSONEncoder):
             def default(self, obj):
@@ -28,11 +30,23 @@ class Minimal(object):
                 return d
 
         @staticmethod
+        def from_json_array(json_array):
+            """
+            :type json_array: list
+            :rtype: list of [Minimal]
+            """
+            result = []
+            for obj in json_array:
+                result.append(Minimal.JsonFactory.from_json(obj))
+            return result
+
+        @staticmethod
         def from_json(json_obj):
             """:type json_obj: dict
                :rtype: Minimal"""
             if json_obj is None:
                 return None
             obj = Minimal()
+
             return obj
 
