@@ -103,6 +103,21 @@ namespace Test
                 .ShouldMatch(loadedPerson);
         }
 
+        [TestMethod]
+        public void LoadedTestPersonListAsExpected()
+        {
+            var people = PersonTestSetup.LoadedTestPersonListAsExpected.People();
+            string json = Person.SimpleJsonFactory.ToJson(people);
+
+            // Act
+            var loadedPeople = Person.SimpleJsonFactory.FromJsonArray(json);
+
+            // Assert
+            PersonTestSetup.LoadedTestPersonListAsExpected.People()
+                .ToExpectedObject()
+                .ShouldMatch(loadedPeople);
+        }
+
         #endregion
 
         #region Glossary Tests

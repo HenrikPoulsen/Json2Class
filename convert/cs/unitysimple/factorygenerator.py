@@ -4,7 +4,8 @@ from convert.base.parsedobject import *
 
 class FactoryGenerator(BaseFactoryGenerator):
     def generate_import(self):
-        return "using SimpleJSON;\n"
+        return ("using SimpleJSON;\n"
+                "using System.Collections.Generic;\n")
 
     def generate(self, data, namespace):
         """
@@ -26,6 +27,16 @@ class FactoryGenerator(BaseFactoryGenerator):
                       "            {{\n"
                       "                var jsonObject = ToJsonObject(obj);\n"
                       "                return jsonObject.ToString();\n"
+                      "            }}\n"
+                      "\n"
+                      "            public static string ToJson(List<{0}> arr)\n"
+                      "            {{\n"
+                      "                var array = new JSONArray();\n"
+                      "                foreach (var item in arr)\n"
+                      "                {{\n"
+                      "                    array.Add(ToJsonObject(item));\n"
+                      "                }}\n"
+                      "                return array.ToString();\n"
                       "            }}\n"
                       "\n"
                       "            public static JSONNode ToJsonObject({0} obj)\n"
@@ -50,6 +61,17 @@ class FactoryGenerator(BaseFactoryGenerator):
                       "            {{\n"
                       "                var jsonObject = JSON.Parse(jsonString);\n"
                       "                return FromJsonObject(jsonObject);\n"
+                      "            }}\n"
+                      "\n"
+                      "            public static List<{0}> FromJsonArray(string jsonArrayString)\n"
+                      "            {{\n"
+                      "                var jsonArray = JSON.Parse(jsonArrayString);\n"
+                      "                var result = new List<{0}>();\n"
+                      "                foreach (JSONNode jsonObject in jsonArray.AsArray)\n"
+                      "                {{\n"
+                      "                    result.Add(FromJsonObject(jsonObject));\n"
+                      "                }}\n"
+                      "                return result;\n"
                       "            }}\n"
                       "\n"
                       "            public static {0} FromJsonObject(JSONNode jsonObject)\n"
