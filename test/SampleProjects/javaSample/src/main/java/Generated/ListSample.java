@@ -30,6 +30,15 @@ public class ListSample{
             return json.toString();
         }
 
+        public static String toJson(List<ListSample> list) {
+            JSONArray array = new JSONArray();
+            for(ListSample obj : list)
+            {
+                array.add(toJsonObject(obj));
+            }
+            return array.toString();
+        }
+
         public static JSONObject toJsonObject(ListSample obj) {
             JSONObject json = new JSONObject();
             JSONArray tempArray;
@@ -70,6 +79,16 @@ public class ListSample{
         public static ListSample fromJson(String jsonString) {
             JSONObject jsonObject = (JSONObject)JSONValue.parse(jsonString);
             return fromJsonObject(jsonObject);
+        }
+
+        public static List<ListSample> fromJsonArray(String jsonArrayString) {
+            JSONArray jsonArray = (JSONArray)JSONValue.parse(jsonArrayString);
+            List<ListSample> result = new ArrayList<ListSample>();
+            for(Object jsonObject : jsonArray)
+            {
+                result.add(fromJsonObject((JSONObject)jsonObject));
+            }
+            return result;
         }
 
         public static ListSample fromJsonObject(JSONObject jsonObject) {

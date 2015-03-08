@@ -26,6 +26,15 @@ public class GlossDef{
             return json.toString();
         }
 
+        public static String toJson(List<GlossDef> list) {
+            JSONArray array = new JSONArray();
+            for(GlossDef obj : list)
+            {
+                array.add(toJsonObject(obj));
+            }
+            return array.toString();
+        }
+
         public static JSONObject toJsonObject(GlossDef obj) {
             JSONObject json = new JSONObject();
             JSONArray tempArray;
@@ -43,6 +52,16 @@ public class GlossDef{
         public static GlossDef fromJson(String jsonString) {
             JSONObject jsonObject = (JSONObject)JSONValue.parse(jsonString);
             return fromJsonObject(jsonObject);
+        }
+
+        public static List<GlossDef> fromJsonArray(String jsonArrayString) {
+            JSONArray jsonArray = (JSONArray)JSONValue.parse(jsonArrayString);
+            List<GlossDef> result = new ArrayList<GlossDef>();
+            for(Object jsonObject : jsonArray)
+            {
+                result.add(fromJsonObject((JSONObject)jsonObject));
+            }
+            return result;
         }
 
         public static GlossDef fromJsonObject(JSONObject jsonObject) {

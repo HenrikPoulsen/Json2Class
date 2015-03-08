@@ -30,6 +30,15 @@ public class Person{
             return json.toString();
         }
 
+        public static String toJson(List<Person> list) {
+            JSONArray array = new JSONArray();
+            for(Person obj : list)
+            {
+                array.add(toJsonObject(obj));
+            }
+            return array.toString();
+        }
+
         public static JSONObject toJsonObject(Person obj) {
             JSONObject json = new JSONObject();
             JSONArray tempArray;
@@ -50,6 +59,16 @@ public class Person{
         public static Person fromJson(String jsonString) {
             JSONObject jsonObject = (JSONObject)JSONValue.parse(jsonString);
             return fromJsonObject(jsonObject);
+        }
+
+        public static List<Person> fromJsonArray(String jsonArrayString) {
+            JSONArray jsonArray = (JSONArray)JSONValue.parse(jsonArrayString);
+            List<Person> result = new ArrayList<Person>();
+            for(Object jsonObject : jsonArray)
+            {
+                result.add(fromJsonObject((JSONObject)jsonObject));
+            }
+            return result;
         }
 
         public static Person fromJsonObject(JSONObject jsonObject) {
