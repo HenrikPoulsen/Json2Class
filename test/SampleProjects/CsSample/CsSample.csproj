@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Generated\Gender.cs" />
     <Compile Include="Generated\Glossary.cs" />
     <Compile Include="Generated\GlossDef.cs" />
     <Compile Include="Generated\GlossDiv.cs" />

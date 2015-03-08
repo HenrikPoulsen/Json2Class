@@ -13,6 +13,8 @@ class Generator(BaseGenerator):
         for member in self.data.data:
             if member.type == ParsedObjectType.Array:
                 constructor += "            {0} = {1}();\n".format(_capitalize(member.name), _get_member_initialization_string(member, ""))
+            elif member.type == ParsedObjectType.Enum:
+                constructor += "            {0} = 0;\n".format(_capitalize(member.name), _get_type_name(member))
             elif member.type == ParsedObjectType.String:
                 constructor += "            {0} = string.Empty;\n".format(_capitalize(member.name))
         constructor += "        }\n\n"
