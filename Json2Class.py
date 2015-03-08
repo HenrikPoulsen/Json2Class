@@ -1,5 +1,6 @@
 import argparse
 from convert import convert
+from convert.base.generator import BaseGenerator
 
 
 def main():
@@ -25,6 +26,10 @@ def main():
     parser.add_argument("--py-engine",
                         help='Comma separated list of engines to be used for reading/writing Json object in Python. Supported are: json',
                         default="json")
+    parser.add_argument("--skip-date-comment",
+                        help='Skips the generation of a datestamp in all the files',
+                        action='store_const',
+                        const=True)
     args = parser.parse_args()
 
     targets = {}
@@ -35,6 +40,9 @@ def main():
         targets['cs'] = {"path": args.cs_out, "engines": args.cs_engine.split(',')}
     if args.java_out:
         targets['java'] = {"path": args.java_out, "engines": args.java_engine.split(',')}
+
+    if args.skip_date_comment:
+        BaseGenerator.skip_date_comment = True
 
     convert.run(args.namespace, targets, args.source)
 

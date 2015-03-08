@@ -10,6 +10,7 @@ class ParsedObjectType(Enum):
     Bool = 4
     Object = 5
     Array = 6
+    Enum = 7
 
 
 class ParsedObject():
@@ -79,6 +80,7 @@ class ParsedObject():
         for item in json:
             member = ParsedObject(self.name, item)
             self.data.append(member)
+
     def _load_object(self, json):
         for key in json:
             if key.startswith("@"):
@@ -90,7 +92,11 @@ class ParsedObject():
     def _load_annotation(self, key, value):
         if key == "@name":
             self.name = value
-        elif key == "@skip_generate":
+        elif key == "@skip_generate" or key == "@skipGenerate":
             self.skip = True
         elif key == "@namespace":
             self.namespace = value
+        elif key == "@type":
+            forced_type = value
+            if forced_type == "enum":
+                self.type = ParsedObjectType.Enum

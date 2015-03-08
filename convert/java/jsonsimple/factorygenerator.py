@@ -68,7 +68,10 @@ class FactoryGenerator(BaseFactoryGenerator):
             elif member.type == ParsedObjectType.Array:
                 serializer += _serialize_array_member(member)
             else:
-                serializer += "            json.put(\"{0}\", obj.{1});\n".format(member.name, member.name)
+                accessor_str = ""
+                if member.type == ParsedObjectType.Enum:
+                    accessor_str = ".getValue()"
+                serializer += "            json.put(\"{0}\", obj.{1}{2});\n".format(member.name, member.name, accessor_str)
 
         serializer += ("            return json;\n"
                        "        }\n")
@@ -110,6 +113,10 @@ def _member_initialization(member):
 
     if member.type == ParsedObjectType.Object:
         return "            obj.{0} = !jsonObject.containsKey(\"{0}\") ? null : {1};\n".format(member.name, _get_member_initialization_string(member, json_container_string))
+    elif member.type == ParsedObjectType.Enum:
+        return ("            if(jsonObject.containsKey(\"{0}\")) {{\n"
+                "                obj.{0} = new {2}((Long){1});\n"
+                "            }}\n").format(member.name, _get_member_initialization_string(member, json_container_string), _get_type_name(member, False))
     elif member.type == ParsedObjectType.Array:
         result = ("            if(jsonObject.containsKey(\"{0}\")) {{\n"
                   "                obj.{0} = new ArrayList<{1}>();\n"

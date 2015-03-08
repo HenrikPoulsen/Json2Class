@@ -1,5 +1,6 @@
 *.pyc
 .idea/workspace.xml
+.idea/Json2Class.iml
 .idea/misc.xml.idea/misc.xml
 test/SampleProjects/CsSample/packages/
 test/SampleProjects/CsSample/bin/

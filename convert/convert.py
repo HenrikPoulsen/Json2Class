@@ -59,11 +59,11 @@ def _generate_class(namespace, generators, parsed_object):
 
     content = []
 
-    if parsed_object.type == ParsedObjectType.Object or \
+    if parsed_object.type == ParsedObjectType.Object or parsed_object.type == ParsedObjectType.Enum or \
             (parsed_object.type == ParsedObjectType.Array and _get_bottom_child(parsed_object).type == ParsedObjectType.Array):
         print "Generating {0}.{1}".format(namespace, parsed_object.name)
         for obj in parsed_object.data:
-            if obj.type == ParsedObjectType.Object:
+            if obj.type == ParsedObjectType.Object or obj.type == ParsedObjectType.Enum:
                 content.extend(_generate_class(namespace, generators, obj))
             elif obj.type == ParsedObjectType.Array:
                 for child in obj.data:
