@@ -11,6 +11,8 @@ namespace CsSample
     {
         static void Main(string[] args)
         {
+            var listSample = new ListSample();
+            listSample.ObjectList.Add(new ObjectList{ Name = "Hello"});
         }
     }
 }

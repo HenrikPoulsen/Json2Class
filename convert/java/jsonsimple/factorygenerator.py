@@ -4,14 +4,11 @@ from convert.base.parsedobject import ParsedObjectType
 
 class FactoryGenerator(BaseFactoryGenerator):
     def generate_import(self):
-        result = "import org.json.simple.JSONObject;\n" \
-                 "import org.json.simple.JSONValue;\n"
-        for member in self.data.data:
-            if member.type == ParsedObjectType.Array:
-                result += ("import java.util.List;\n"
-                           "import java.util.ArrayList;\n"
-                           "import org.json.simple.JSONArray;\n")
-                break
+        result = ("import org.json.simple.JSONObject;\n"
+                  "import org.json.simple.JSONValue;\n"
+                  "import java.util.List;\n"
+                  "import java.util.ArrayList;\n"
+                  "import org.json.simple.JSONArray;\n")
         return result
 
     def _generate_from_json(self):
@@ -20,6 +17,15 @@ class FactoryGenerator(BaseFactoryGenerator):
                        "            return fromJsonObject(jsonObject);\n"
                        "        }}\n"
                        "\n"
+                       "        public static List<{0}> fromJsonArray(String jsonArrayString) {{\n"
+                       "            JSONArray jsonArray = (JSONArray)JSONValue.parse(jsonArrayString);\n"
+                       "            List<{0}> result = new ArrayList<{0}>();\n"
+                       "            for(Object jsonObject : jsonArray)\n"
+                       "            {{\n"
+                       "                result.add(fromJsonObject((JSONObject)jsonObject));\n"
+                       "            }}\n"
+                       "            return result;\n"
+                       "        }}\n\n"
                        "        public static {0} fromJsonObject(JSONObject jsonObject) {{\n"
                        "            if(jsonObject == null) {{\n"
                        "                return null;\n"
@@ -38,6 +44,14 @@ class FactoryGenerator(BaseFactoryGenerator):
         serializer = ("        public static String toJson({0} obj) {{\n"
                       "            JSONObject json = toJsonObject(obj);\n"
                       "            return json.toString();\n"
+                      "        }}\n\n"
+                      "        public static String toJson(List<{0}> list) {{\n"
+                      "            JSONArray array = new JSONArray();\n"
+                      "            for({0} obj : list)\n"
+                      "            {{\n"
+                      "                array.add(toJsonObject(obj));\n"
+                      "            }}\n"
+                      "            return array.toString();\n"
                       "        }}\n"
                       "\n"
                       "        public static JSONObject toJsonObject({0} obj) {{\n"
