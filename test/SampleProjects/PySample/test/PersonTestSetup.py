@@ -10,6 +10,8 @@ def compare_person(x, y, context):
     :type x: Person
     :type y: Person
     """
+    if x.gender != y.gender:
+        return "Person {0} gender {1} != Person {2} gender {3}".format(x.name, x.gender, y.name, y.gender)
     if x.name != y.name:
         return "Person name {0} != Person name {1}".format(x.name, y.name)
     if x.age != y.age:
