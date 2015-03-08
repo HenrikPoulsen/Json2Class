@@ -83,5 +83,29 @@ namespace Test
                 return new Person();
             }
         }
+
+        public static class LoadedTestPersonListAsExpected
+        {
+            public static List<Person> People()
+            {
+                return new List<Person>
+                {
+                    new Person
+                    {
+                        Age = 3,
+                        Country = "DK",
+                        IsHuman = true,
+                        Name = "Olle"
+                    },
+                    new Person
+                    {
+                        Age = 187,
+                        Country = "NA",
+                        IsHuman = false,
+                        Name = "Splork"
+                    }
+                };
+            }
+        }
     }
 }

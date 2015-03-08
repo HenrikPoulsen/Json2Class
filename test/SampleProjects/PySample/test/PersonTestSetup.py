@@ -73,3 +73,16 @@ class PersonTestSetup:
         def person():
             return Person()
 
+    class LoadedTestPersonListAsExpected:
+        @staticmethod
+        def people():
+            people = [Person(), Person()]
+            people[0].age = 3
+            people[0].country = "DK"
+            people[0].is_human = True
+            people[0].name = "Olle"
+            people[1].age = 187
+            people[1].country = "NA"
+            people[1].is_human = False
+            people[1].name = "Splork"
+            return people

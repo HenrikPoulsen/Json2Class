@@ -126,6 +126,20 @@ class TestJson(unittest.TestCase):
         except AssertionError as err:
             self.assertEqual("Glossary title  != Glossary title Different", err.message)
 
+    def testLoadedPeopleAsExpected(self):
+        # Assemble
+        json_str = Person.JsonFactory.to_json(PersonTestSetup.LoadedTestPersonListAsExpected.people())
+        json_obj = json.loads(json_str)
+
+        # Act
+        loaded_people = Person.JsonFactory.from_json_array(json_obj)
+
+        # Assert
+        i = 0
+        while i < len(loaded_people):
+            self.assertEqual(Comparison(PersonTestSetup.LoadedTestPersonListAsExpected.people()[i]), loaded_people[i])
+            i += 1
+
 
 def _get_dict(obj):
     if obj is None:

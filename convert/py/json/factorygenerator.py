@@ -9,12 +9,22 @@ class FactoryGenerator(BaseFactoryGenerator):
 
     def _generate_from_json(self):
         constructor = ("        @staticmethod\n"
+                       "        def from_json_array(json_array):\n"
+                       "            \"\"\"\n"
+                       "            :type json_array: list\n"
+                       "            :rtype: list of [{0}]\n"
+                       "            \"\"\"\n"
+                       "            result = []\n"
+                       "            for obj in json_array:\n"
+                       "                result.append({0}.JsonFactory.from_json(obj))\n"
+                       "            return result\n\n"
+                       "        @staticmethod\n"
                        "        def from_json(json_obj):\n"
                        "            \"\"\":type json_obj: dict\n"
                        "               :rtype: {0}\"\"\"\n"
                        "            if json_obj is None:\n"
                        "                return None\n"
-                       "            obj = {0}()\n").format(_capitalize(self.data.name))
+                       "            obj = {0}()\n\n").format(_capitalize(self.data.name))
 
         for member in self.data.data:
             constructor += _member_load(member)
@@ -25,9 +35,12 @@ class FactoryGenerator(BaseFactoryGenerator):
 
     def _generate_to_json(self):
         result = ("        @staticmethod\n"
-                  "        def to_json(self):\n"
-                  "            \"\"\":rtype: str\"\"\"\n"
-                  "            return {0}.JsonFactory.JsonEncoder().encode(self)\n\n"
+                  "        def to_json(obj):\n"
+                  "            \"\"\"\n"
+                  "            Takes an {0} or a list of {0} and returns a json string representation of itn"
+                  "            :rtype: str\n"
+                  "            \"\"\"\n"
+                  "            return {0}.JsonFactory.JsonEncoder().encode(obj)\n\n"
                   "        class JsonEncoder(json.JSONEncoder):\n"
                   "            def default(self, obj):\n"
                   "                if obj is None:\n"

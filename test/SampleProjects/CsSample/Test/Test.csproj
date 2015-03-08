@@ -60,7 +60,6 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="FastJSONTests.cs" />
     <Compile Include="GlossaryTestSetup.cs" />
     <Compile Include="PersonTestSetup.cs" />
     <Compile Include="SimpleJsonTests.cs" />

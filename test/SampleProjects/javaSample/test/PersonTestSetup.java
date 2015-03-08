@@ -74,4 +74,25 @@ class PersonTestSetup
             return new Person();
         }
     }
+
+    public static class LoadedTestPersonListAsExpected
+    {
+        public static List<Person> People()
+        {
+            List<Person> people = new ArrayList<Person>();
+            people.add(new Person());
+            people.add(new Person());
+            people.get(0).age = 3L;
+            people.get(0).country = "DK";
+            people.get(0).isHuman = true;
+            people.get(0).name = "Olle";
+
+            people.get(1).age = 187L;
+            people.get(1).country = "NA";
+            people.get(1).isHuman = false;
+            people.get(1).name = "Splork";
+            return people;
+        }
+
+    }
 }

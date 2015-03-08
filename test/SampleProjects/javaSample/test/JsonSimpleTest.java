@@ -6,6 +6,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
@@ -113,4 +114,17 @@ public class JsonSimpleTest extends TestCase {
         // Assert
         assertReflectionEquals(GlossaryTestSetup.LoadedTestGlossaryWithMissingValues.Glossary(), loadedGlossary);
     }
+
+    public void testLoadedPeopleAsExpected()
+    {
+        //Assemble
+        String json = Person.JsonSimpleFactory.toJson(PersonTestSetup.LoadedTestPersonListAsExpected.People());
+
+        //Act
+        List<Person> loadedPeople = Person.JsonSimpleFactory.fromJsonArray(json);
+
+        //Assert
+        assertReflectionEquals(PersonTestSetup.LoadedTestPersonListAsExpected.People(), loadedPeople);
+    }
+
 }
