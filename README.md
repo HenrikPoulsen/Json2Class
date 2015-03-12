@@ -6,6 +6,8 @@ It also generates functions which can load and save these objects from json stri
 I like to have static typing since it makes it a lot easier to keep track of what is going on and having classes
 generated from the same source makes it easier to sync changes between frontend/backend if they use different languages.
 
+If you make changes to the code I would love it if you submit a pull request so I can take in any improvements or fixes.
+
 ## Requirements
 View [Getting Started](GettingStarted.md) for requirements and more details into how the tool is used
 
