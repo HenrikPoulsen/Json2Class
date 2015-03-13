@@ -37,7 +37,7 @@ class FactoryGenerator(BaseFactoryGenerator):
         result = ("        @staticmethod\n"
                   "        def to_json(obj):\n"
                   "            \"\"\"\n"
-                  "            Takes an {0} or a list of {0} and returns a json string representation of itn"
+                  "            Takes an {0} or a list of {0} and returns a json string representation of it\n"
                   "            :rtype: str\n"
                   "            \"\"\"\n"
                   "            return {0}.JsonFactory.JsonEncoder().encode(obj)\n\n"
