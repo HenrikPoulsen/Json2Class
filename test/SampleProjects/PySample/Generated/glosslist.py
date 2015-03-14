@@ -29,7 +29,8 @@ class GlossList(object):
         @staticmethod
         def to_json(obj):
             """
-            Takes an GlossList or a list of GlossList and returns a json string representation of itn            :rtype: str
+            Takes an GlossList or a list of GlossList and returns a json string representation of it
+            :rtype: str
             """
             return GlossList.JsonFactory.JsonEncoder().encode(obj)
 

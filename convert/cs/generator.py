@@ -31,11 +31,6 @@ class Generator(BaseGenerator):
 
     def _generate_header(self):
         result = ""
-        for member in self.data.data:
-            if member.type == ParsedObjectType.Array:
-                result += "using System.Collections.Generic;\n"
-                break
-
         date_str = "Date: {0}".format(datetime.date.today())
         if BaseGenerator.skip_date_comment:
             date_str = ""

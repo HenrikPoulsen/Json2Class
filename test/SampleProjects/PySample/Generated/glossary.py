@@ -41,7 +41,8 @@ class Glossary(object):
         @staticmethod
         def to_json(obj):
             """
-            Takes an Glossary or a list of Glossary and returns a json string representation of itn            :rtype: str
+            Takes an Glossary or a list of Glossary and returns a json string representation of it
+            :rtype: str
             """
             return Glossary.JsonFactory.JsonEncoder().encode(obj)
 

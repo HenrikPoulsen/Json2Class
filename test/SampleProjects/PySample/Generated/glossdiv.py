@@ -41,7 +41,8 @@ class GlossDiv(object):
         @staticmethod
         def to_json(obj):
             """
-            Takes an GlossDiv or a list of GlossDiv and returns a json string representation of itn            :rtype: str
+            Takes an GlossDiv or a list of GlossDiv and returns a json string representation of it
+            :rtype: str
             """
             return GlossDiv.JsonFactory.JsonEncoder().encode(obj)
 

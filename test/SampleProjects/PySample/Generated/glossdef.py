@@ -40,7 +40,8 @@ class GlossDef(object):
         @staticmethod
         def to_json(obj):
             """
-            Takes an GlossDef or a list of GlossDef and returns a json string representation of itn            :rtype: str
+            Takes an GlossDef or a list of GlossDef and returns a json string representation of it
+            :rtype: str
             """
             return GlossDef.JsonFactory.JsonEncoder().encode(obj)
 

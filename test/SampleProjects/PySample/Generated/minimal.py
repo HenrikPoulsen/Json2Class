@@ -17,7 +17,8 @@ class Minimal(object):
         @staticmethod
         def to_json(obj):
             """
-            Takes an Minimal or a list of Minimal and returns a json string representation of itn            :rtype: str
+            Takes an Minimal or a list of Minimal and returns a json string representation of it
+            :rtype: str
             """
             return Minimal.JsonFactory.JsonEncoder().encode(obj)
 

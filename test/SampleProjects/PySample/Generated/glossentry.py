@@ -113,7 +113,8 @@ class GlossEntry(object):
         @staticmethod
         def to_json(obj):
             """
-            Takes an GlossEntry or a list of GlossEntry and returns a json string representation of itn            :rtype: str
+            Takes an GlossEntry or a list of GlossEntry and returns a json string representation of it
+            :rtype: str
             """
             return GlossEntry.JsonFactory.JsonEncoder().encode(obj)
 

@@ -28,7 +28,8 @@ class ObjectList(object):
         @staticmethod
         def to_json(obj):
             """
-            Takes an ObjectList or a list of ObjectList and returns a json string representation of itn            :rtype: str
+            Takes an ObjectList or a list of ObjectList and returns a json string representation of it
+            :rtype: str
             """
             return ObjectList.JsonFactory.JsonEncoder().encode(obj)
 

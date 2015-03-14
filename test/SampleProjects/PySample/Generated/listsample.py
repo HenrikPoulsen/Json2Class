@@ -65,7 +65,8 @@ class ListSample(object):
         @staticmethod
         def to_json(obj):
             """
-            Takes an ListSample or a list of ListSample and returns a json string representation of itn            :rtype: str
+            Takes an ListSample or a list of ListSample and returns a json string representation of it
+            :rtype: str
             """
             return ListSample.JsonFactory.JsonEncoder().encode(obj)
 

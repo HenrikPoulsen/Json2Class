@@ -89,7 +89,8 @@ class Person(object):
         @staticmethod
         def to_json(obj):
             """
-            Takes an Person or a list of Person and returns a json string representation of itn            :rtype: str
+            Takes an Person or a list of Person and returns a json string representation of it
+            :rtype: str
             """
             return Person.JsonFactory.JsonEncoder().encode(obj)
 
