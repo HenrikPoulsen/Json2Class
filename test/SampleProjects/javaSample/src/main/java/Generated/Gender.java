@@ -17,13 +17,13 @@ public class Gender{
         value = val;
     }
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public boolean equals(Object other) {
+        if (this == other) return true;
+        if (other == null || getClass() != other.getClass()) return false;
 
-        Gender gender = (Gender) o;
+        Gender obj = (Gender) other;
 
-        return value == gender.value;
+        return value == obj.value;
     }
 
     @Override

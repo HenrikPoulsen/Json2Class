@@ -34,19 +34,19 @@ class Generator(BaseGenerator):
         result = ""
         if self.data.type == ParsedObjectType.Enum:
             result += ("    @Override\n"
-                       "    public boolean equals(Object o) {\n"
-                       "        if (this == o) return true;\n"
-                       "        if (o == null || getClass() != o.getClass()) return false;\n"
+                       "    public boolean equals(Object other) {{\n"
+                       "        if (this == other) return true;\n"
+                       "        if (other == null || getClass() != other.getClass()) return false;\n"
                        "\n"
-                       "        Gender gender = (Gender) o;\n"
+                       "        {0} obj = ({0}) other;\n"
                        "\n"
-                       "        return value == gender.value;\n"
-                       "    }\n"
+                       "        return value == obj.value;\n"
+                       "    }}\n"
                        "\n"
                        "    @Override\n"
-                       "    public int hashCode() {\n"
+                       "    public int hashCode() {{\n"
                        "        return (int) (value ^ (value >>> 32));\n"
-                       "    }\n")
+                       "    }}\n").format(_get_type_name(self.data))
         return result + "}\n"
 
     def _generate_member_access(self):
