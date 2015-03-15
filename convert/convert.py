@@ -61,7 +61,7 @@ def _generate_class(namespace, generators, parsed_object):
 
     if parsed_object.type == ParsedObjectType.Object or parsed_object.type == ParsedObjectType.Enum or \
             (parsed_object.type == ParsedObjectType.Array and _get_bottom_child(parsed_object).type == ParsedObjectType.Array):
-        print "Generating {0}.{1}".format(namespace, parsed_object.name)
+        print "Generating {0}.{1}".format(namespace, parsed_object.type_name)
         for obj in parsed_object.data:
             if obj.type == ParsedObjectType.Object or obj.type == ParsedObjectType.Enum:
                 content.extend(_generate_class(namespace, generators, obj))
@@ -69,9 +69,9 @@ def _generate_class(namespace, generators, parsed_object):
                 for child in obj.data:
                     content.extend(_generate_class(namespace, generators, child))
 
-        print "Generating {0}.{1}".format(namespace, parsed_object.name)
+        print "Generating {0}.{1}".format(namespace, parsed_object.type_name)
         for generator in generators:
-            content.append({"name": generator.file_name(parsed_object.name),
+            content.append({"name": generator.file_name(parsed_object.type_name),
                             "content": generator.generate_code(namespace, parsed_object),
                             "module": generator.__module__})
 
