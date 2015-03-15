@@ -23,6 +23,7 @@ namespace Generated
         public long Age {get; set;}
         public string Country {get; set;}
         public bool IsHuman {get; set;}
+        public Glossary MyGlossary {get; set;}
         public Gender Gender {get; set;}
         public List<Person> Family {get; set;}
 
@@ -53,6 +54,8 @@ namespace Generated
                 if (obj.Country != null)
                     jsonObject["country"] = new JSONData(obj.Country);
                 jsonObject["isHuman"] = new JSONData(obj.IsHuman);
+                if (obj.MyGlossary != null)
+                    jsonObject["myGlossary"] = Generated.Glossary.SimpleJsonFactory.ToJsonObject(obj.MyGlossary);
                 jsonObject["gender"] = new JSONData((int)obj.Gender);
                 if(obj.Family != null)
                 {
@@ -89,6 +92,7 @@ namespace Generated
                 var age = jsonObject["age"].AsInt;
                 var country = jsonObject["country"].Value ?? "";
                 var isHuman = jsonObject["isHuman"].AsBool;
+                var myGlossary = jsonObject["myGlossary"] != null ? Generated.Glossary.SimpleJsonFactory.FromJsonObject(jsonObject["myGlossary"]) : null;
                 var gender = (Gender)jsonObject["gender"].AsInt;
                 var family = new List<Person>();
                 foreach(JSONNode item in jsonObject["family"].AsArray)
@@ -102,6 +106,7 @@ namespace Generated
                     Age = age,
                     Country = country,
                     IsHuman = isHuman,
+                    MyGlossary = myGlossary,
                     Gender = gender,
                     Family = family,
                 };

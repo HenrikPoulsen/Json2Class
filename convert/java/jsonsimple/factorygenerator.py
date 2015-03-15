@@ -30,7 +30,7 @@ class FactoryGenerator(BaseFactoryGenerator):
                        "            if(jsonObject == null) {{\n"
                        "                return null;\n"
                        "            }}\n"
-                       "            {0} obj = new {0}();\n").format(_capitalize(self.data.name))
+                       "            {0} obj = new {0}();\n").format(_capitalize(self.data.type_name))
 
         # member initialization
         for member in self.data.data:
@@ -55,7 +55,7 @@ class FactoryGenerator(BaseFactoryGenerator):
                       "        }}\n"
                       "\n"
                       "        public static JSONObject toJsonObject({0} obj) {{\n"
-                      "            JSONObject json = new JSONObject();\n").format(_capitalize(self.data.name))
+                      "            JSONObject json = new JSONObject();\n").format(_capitalize(self.data.type_name))
 
         for member in self.data.data:
             if member.type == ParsedObjectType.Array:
@@ -124,7 +124,7 @@ def _member_initialization(member):
         child = member.data[0]
 
         if child.type == ParsedObjectType.Object:
-            result += "                    obj.{0}.add({1}.JsonSimpleFactory.fromJsonObject((JSONObject)item));\n".format(member.name, _capitalize(child.name))
+            result += "                    obj.{0}.add({1}.JsonSimpleFactory.fromJsonObject((JSONObject)item));\n".format(member.name, _capitalize(child.type_name))
         else:
             result += "                    obj.{0}.add(({1})item);\n".format(member.name, _get_type_name(child, False))
         result += ("                }\n"
@@ -138,9 +138,9 @@ def _member_initialization(member):
 
 def _get_member_initialization_string(member, json_container):
     if member.type == ParsedObjectType.Object:
-        return "{0}.JsonSimpleFactory.fromJsonObject((JSONObject){1})".format(_capitalize(member.name), json_container)
+        return "{0}.JsonSimpleFactory.fromJsonObject((JSONObject){1})".format(_capitalize(member.type_name), json_container)
     if member.type == ParsedObjectType.Array:
-        return "new {0}".format( _get_type_name(member))
+        return "new {0}".format(_get_type_name(member))
     return "{0}{1}".format(json_container, "")
 
 
@@ -165,11 +165,11 @@ def _get_type_name(member, primitive=True):
         return member.type.name.lower()
     if member.type == ParsedObjectType.Array:
         return "List<{0}>".format(_get_type_name(member.data[0], False))
-    return _capitalize(member.name)
+    return _capitalize(member.type_name)
 
 
 def _serialize_object_member(member):
-    return "            json.put(\"{0}\", obj.{0} == null ? null : {1}.JsonSimpleFactory.toJsonObject(obj.{0}));\n".format(member.name, _capitalize(member.name))
+    return "            json.put(\"{0}\", obj.{0} == null ? null : {1}.JsonSimpleFactory.toJsonObject(obj.{0}));\n".format(member.name, _capitalize(member.type_name))
 
 
 def _serialize_array_member(member):
@@ -177,7 +177,7 @@ def _serialize_array_member(member):
                   "                tempArray = new JSONArray();\n"
                   "                for({1} item : obj.{0}){{\n").format(member.name, _get_type_name(member.data[0], False))
     if member.data[0].type == ParsedObjectType.Object:
-        serializer += "                    tempArray.add({0}.JsonSimpleFactory.toJsonObject(item));\n".format(_capitalize(member.data[0].name))
+        serializer += "                    tempArray.add({0}.JsonSimpleFactory.toJsonObject(item));\n".format(_capitalize(member.data[0].type_name))
     else:
         serializer += "                    tempArray.add(item);\n"
     serializer += "                }\n"

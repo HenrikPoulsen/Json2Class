@@ -25,6 +25,7 @@ class ParsedObject():
         :return:
         """
         self.name = name
+        self.type_name = name
         self.data = []
         self.type = ParsedObjectType.Unknown
         self.skip = False
@@ -91,7 +92,7 @@ class ParsedObject():
 
     def _load_annotation(self, key, value):
         if key == "@name":
-            self.name = value
+            self.type_name = value
         elif key == "@skip_generate" or key == "@skipGenerate":
             self.skip = True
         elif key == "@namespace":

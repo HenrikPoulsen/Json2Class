@@ -3,6 +3,10 @@
   "age": 32,
   "country": "Sweden",
   "isHuman": true,
+  "myGlossary": {
+    "@name": "glossary",
+    "@skipGenerate": ""
+  },
   "gender": {
     "@type": "enum",
     "unspecified": 0,

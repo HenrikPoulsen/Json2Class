@@ -41,7 +41,7 @@ class FactoryGenerator(BaseFactoryGenerator):
                       "\n"
                       "            public static JSONNode ToJsonObject({0} obj)\n"
                       "            {{\n"
-                      "                var jsonObject = new JSONClass();\n").format(_capitalize(self.data.name))
+                      "                var jsonObject = new JSONClass();\n").format(_capitalize(self.data.type_name))
         for member in self.data.data:
             if member.type == ParsedObjectType.Object:
                 serializer += _serialize_object_member(member, self.namespace)
@@ -78,14 +78,14 @@ class FactoryGenerator(BaseFactoryGenerator):
                       "            }}\n"
                       "\n"
                       "            public static {0} FromJsonObject(JSONNode jsonObject)\n"
-                      "            {{\n").format(_capitalize(self.data.name))
+                      "            {{\n").format(_capitalize(self.data.type_name))
 
         # member initialization
         for member in self.data.data:
             serializer += self._member_initialization(member, self.namespace)
 
         serializer += ("                return new {0}\n"
-                       "                {{\n").format(_capitalize(self.data.name))
+                       "                {{\n").format(_capitalize(self.data.type_name))
 
         for member in self.data.data:
             serializer += "                    {0} = {1},\n".format(_capitalize(member.name), member.name)
@@ -101,8 +101,8 @@ class FactoryGenerator(BaseFactoryGenerator):
         serializer += "                    foreach(var item in obj.{0})\n".format(_capitalize(member.name))
         serializer += "                    {\n"
         if member.data[0].type == ParsedObjectType.Object:
-            factory_name = "{0}.{1}.SimpleJsonFactory.".format(namespace, _capitalize(member.data[0].name))
-            if member.data[0].name == self.data.name:
+            factory_name = "{0}.{1}.SimpleJsonFactory.".format(namespace, _capitalize(member.data[0].type_name))
+            if member.data[0].type_name == self.data.type_name:
                 factory_name = ""
             serializer += "                        {0}.Add({1}ToJsonObject(item));\n".format(member.name, factory_name)
         else:
@@ -122,7 +122,7 @@ class FactoryGenerator(BaseFactoryGenerator):
         json_container_string = "jsonObject[\"{0}\"]".format(member.name)
 
         if member.type == ParsedObjectType.Object:
-            return "                var {0} = {3} != null ? {1}.{2}.SimpleJsonFactory.FromJsonObject({3}) : null;\n".format(member.name, namespace, _capitalize(member.name), json_container_string)
+            return "                var {0} = {3} != null ? {1}.{2}.SimpleJsonFactory.FromJsonObject({3}) : null;\n".format(member.name, namespace, _capitalize(member.type_name), json_container_string)
         elif member.type == ParsedObjectType.Array:
             result = ("                var {2} = {1}();\n"
                       "                foreach(JSONNode item in jsonObject[\"{2}\"].AsArray)\n"
@@ -130,8 +130,8 @@ class FactoryGenerator(BaseFactoryGenerator):
             child = member.data[0]
 
             if child.type == ParsedObjectType.Object:
-                factory_name = "{0}.{1}.SimpleJsonFactory.".format(namespace, _capitalize(member.data[0].name))
-                if child.name == self.data.name:
+                factory_name = "{0}.{1}.SimpleJsonFactory.".format(namespace, _capitalize(member.data[0].type_name))
+                if child.type_name == self.data.type_name:
                     factory_name = ""
                 result += "                    {0}.Add({1}FromJsonObject(item));\n".format(member.name, factory_name)
             else:
@@ -154,9 +154,9 @@ def _member_declaration(member):
 
 def _get_member_initialization_string(member, json_container):
     if member.type == ParsedObjectType.Object:
-        return "new {0}({1})".format(_capitalize(member.name), json_container)
+        return "new {0}({1})".format(_capitalize(member.type_name), json_container)
     if member.type == ParsedObjectType.Array:
-        return "new {0}".format( _get_type_name(member))
+        return "new {0}".format(_get_type_name(member))
     return "{0}{1}".format(json_container, _json_load_as(member))
 
 
@@ -176,7 +176,6 @@ def _json_load_as(member):
     return ""
 
 
-
 def _get_type_name(member):
     """
     If a ParsedClass is supplied then it returns the object name with a captialized first letter (myClass => MyClass)
@@ -192,12 +191,12 @@ def _get_type_name(member):
     elif member.type == ParsedObjectType.Array:
         return "List<{0}>".format(_get_type_name(member.data[0]))
     else:
-        return _capitalize(member.name)
+        return _capitalize(member.type_name)
 
 
 def _serialize_object_member(member, namespace):
     return ("                if (obj.{1} != null)\n"
-            "                    jsonObject[\"{0}\"] = {2}.{1}.SimpleJsonFactory.ToJsonObject(obj.{1});\n").format(member.name, _capitalize(member.name), namespace)
+            "                    jsonObject[\"{0}\"] = {3}.{2}.SimpleJsonFactory.ToJsonObject(obj.{1});\n").format(member.name, _capitalize(member.name), _capitalize(member.type_name), namespace)
 
 def _capitalize(obj):
     """

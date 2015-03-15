@@ -27,7 +27,7 @@ class Generator(BaseGenerator):
                 elif member.type == ParsedObjectType.Bool:
                     constructor += "        self._{0} = False\n".format(_camel_case(member.name))
                 elif member.type == ParsedObjectType.Enum:
-                    constructor += "        self._{0} = {1}(0)\n".format(_camel_case(member.name), _capitalize(member.name))
+                    constructor += "        self._{0} = {1}(0)\n".format(_camel_case(member.name), _capitalize(member.type_name))
         constructor += "\n"
 
         return constructor
@@ -52,17 +52,17 @@ class Generator(BaseGenerator):
                 result += factory.generate_import()
 
         for member in self.data.data:
-            if _capitalize(member.name) == _capitalize(self.data.name):
+            if _capitalize(member.type_name) == _capitalize(self.data.type_name):
                 # if the member is the same class as the current class then we shouldn't import it
                 continue
             if member.type == ParsedObjectType.Object or member.type == ParsedObjectType.Enum:
-                result += "from {0} import {1}\n".format(member.name.lower(), _capitalize(member.name))
+                result += "from {0} import {1}\n".format(member.type_name.lower(), _capitalize(member.type_name))
             elif member.type == ParsedObjectType.Array:
                 child = member.data[0]
-                if _capitalize(child.name) == _capitalize(self.data.name):
+                if _capitalize(child.type_name) == _capitalize(self.data.type_name):
                     continue
                 if child.type == ParsedObjectType.Object:
-                    result += "from {0} import {1}\n".format(child.name.lower(), _capitalize(child.name))
+                    result += "from {0} import {1}\n".format(child.type_name.lower(), _capitalize(child.type_name))
 
         date_str = "Date: {0}".format(datetime.date.today())
         if BaseGenerator.skip_date_comment:
@@ -78,7 +78,7 @@ class Generator(BaseGenerator):
         inheritance_str = "object"
         if self.data.type == ParsedObjectType.Enum:
             inheritance_str = "Enum"
-        result += "\nclass {0}({1}):\n".format(_capitalize(self.data.name), inheritance_str)
+        result += "\nclass {0}({1}):\n".format(_capitalize(self.data.type_name), inheritance_str)
         return result
 
     def file_name(self, json_name):
@@ -120,7 +120,7 @@ def _get_type_name(obj):
     if obj.type == ParsedObjectType.String:
         return "str"
     if obj.type == ParsedObjectType.Object or obj.type == ParsedObjectType.Enum:
-        return _capitalize(obj.name)
+        return _capitalize(obj.type_name)
     if obj.type == ParsedObjectType.Array:
         return "list of [{0}]".format(_get_type_name(obj.data[0]))
     return obj.type.name.lower()

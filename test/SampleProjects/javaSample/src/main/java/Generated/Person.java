@@ -22,6 +22,7 @@ public class Person{
     public Long age;
     public String country;
     public Boolean isHuman;
+    public Glossary myGlossary;
     public Gender gender;
     public List<Person> family;
 
@@ -48,6 +49,7 @@ public class Person{
             json.put("age", obj.age);
             json.put("country", obj.country);
             json.put("isHuman", obj.isHuman);
+            json.put("myGlossary", obj.myGlossary == null ? null : Glossary.JsonSimpleFactory.toJsonObject(obj.myGlossary));
             json.put("gender", obj.gender.getValue());
 
             if(obj.family != null) {
@@ -91,6 +93,7 @@ public class Person{
             if(jsonObject.containsKey("isHuman")) {
                 obj.isHuman = (Boolean)jsonObject.get("isHuman");
             }
+            obj.myGlossary = !jsonObject.containsKey("myGlossary") ? null : Glossary.JsonSimpleFactory.fromJsonObject((JSONObject)jsonObject.get("myGlossary"));
             if(jsonObject.containsKey("gender")) {
                 obj.gender = new Gender((Long)jsonObject.get("gender"));
             }

@@ -8,7 +8,7 @@ class Generator(BaseGenerator):
         if self.data.type == ParsedObjectType.Enum:
             return ""
         constructor = ("        public {0}()\n"
-                       "        {{\n").format(_capitalize(self.data.name))
+                       "        {{\n").format(_capitalize(self.data.type_name))
 
         for member in self.data.data:
             if member.type == ParsedObjectType.Array:
@@ -50,7 +50,7 @@ class Generator(BaseGenerator):
                    "namespace {0}\n"
                    "{{\n"
                    "    public {3} {1}\n"
-                   "    {{\n").format(self.namespace, _capitalize(self.data.name), date_str, object_type_str)
+                   "    {{\n").format(self.namespace, _capitalize(self.data.type_name), date_str, object_type_str)
         return result
 
     def _generate_footer(self):
@@ -65,9 +65,9 @@ class Generator(BaseGenerator):
 
 def _get_member_initialization_string(member, json_container):
     if member.type == ParsedObjectType.Object:
-        return "new {0}({1})".format(_capitalize(member.name), json_container)
+        return "new {0}({1})".format(_capitalize(member.type_name), json_container)
     if member.type == ParsedObjectType.Array:
-        return "new {0}".format( _get_type_name(member))
+        return "new {0}".format(_get_type_name(member))
 
 
 def _capitalize(obj):
@@ -98,4 +98,4 @@ def _get_type_name(member):
     elif member.type == ParsedObjectType.Array:
         return "List<{0}>".format(_get_type_name(member.data[0]))
     else:
-        return _capitalize(member.name)
+        return _capitalize(member.type_name)

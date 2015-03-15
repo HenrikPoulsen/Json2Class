@@ -10,11 +10,11 @@ class Generator(BaseGenerator):
         if self.data.type == ParsedObjectType.Enum:
             param = "long val"
             for member in self.data.data:
-                constructor += "    public static {2} {0} = new {2}({1});\n".format(member.name.upper(), member.data, _capitalize(self.data.name))
+                constructor += "    public static {2} {0} = new {2}({1});\n".format(member.name.upper(), member.data, _capitalize(self.data.type_name))
             constructor = constructor[:-2] + ";\n\n"
             constructor += ("    private long value;\n"
                             "    public long getValue() { return value; }\n")
-        constructor += "    public {0}({1}) {{\n".format(_capitalize(self.data.name), param)
+        constructor += "    public {0}({1}) {{\n".format(_capitalize(self.data.type_name), param)
 
         if self.data.type == ParsedObjectType.Enum:
             constructor += "        value = val;\n    }\n"
@@ -76,7 +76,7 @@ class Generator(BaseGenerator):
                    "/* Modifications to this file will be lost the next time you run the tool.         */\n"
                    "/* {2}*/\n"
                    "/***********************************************************************************/\n\n"
-                   "public class {1}{{\n").format(self.namespace, _capitalize(self.data.name), date_str)
+                   "public class {1}{{\n").format(self.namespace, _capitalize(self.data.type_name), date_str)
         return result
 
 
@@ -95,7 +95,6 @@ def _capitalize(obj):
     if obj == "string" or obj == "float" or obj == "int":
         return obj
     return obj[0].upper() + obj[1:]
-
 
 
 def _get_type_name(member, primitive=True):
@@ -118,4 +117,4 @@ def _get_type_name(member, primitive=True):
         return member.type.name.lower()
     if member.type == ParsedObjectType.Array:
         return "List<{0}>".format(_get_type_name(member.data[0], False))
-    return _capitalize(member.name)
+    return _capitalize(member.type_name)
